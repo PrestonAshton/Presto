@@ -1,0 +1,1 @@
+@"game/build/presto-x64.exe" -game template

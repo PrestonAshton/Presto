@@ -1,0 +1,6 @@
+#ifndef PRESTO_GRAPHICS_GLRENDERPATH_H
+#define PRESTO_GRAPHICS_GLRENDERPATH_H
+
+void GLRender(void);
+
+#endif
