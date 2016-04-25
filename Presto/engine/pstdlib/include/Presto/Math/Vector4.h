@@ -169,6 +169,27 @@ forceinline Vector4* Vector4MultiplyEquals(Vector4* a, const Vector4* b)
   return(a);
 }
 
+forceinline Vector4 Vector4Divide(const Vector4* a, const Vector4* b)
+{
+	Vector4 returnValue;
+	returnValue.x = a->x / b->x;
+	returnValue.y = a->y / b->y;
+	returnValue.z = a->z / b->z;
+	returnValue.w = a->z / b->w;
+
+	return(returnValue);
+}
+
+forceinline Vector4* Vector4DivideEquals(Vector4* a, const Vector4* b)
+{
+	a->x = a->x / b->x;
+	a->y = a->y / b->y;
+	a->z = a->z / b->z;
+	a->w = a->w / b->w;
+
+	return(a);
+}
+
 forceinline f32 Vector4Dot(const Vector4* a, const Vector4* b)
 {
   return(a->x * b->x + a->y * b->y + a->z * b->z + a->w * b->w);

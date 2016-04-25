@@ -23,6 +23,7 @@
 
 #include "common/shared_glfuncs_generated.c"
 #include "common/shared_glrenderpath.c"
+#include "common/shared_camera.c"
 #include "common/win32_glwindow.c"
 
 #ifdef PRESTO_STEAM

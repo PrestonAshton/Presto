@@ -14,15 +14,16 @@ typedef union
   Vector4 data[4];
 } Matrix4;
 
-const Matrix4 Matrix4Identity =
-{
-  {
-    { 1.0f, 0.0f, 0.0f, 0.0f },
-    { 0.0f, 1.0f, 0.0f, 0.0f },
-    { 0.0f, 0.0f, 1.0f, 0.0f },
-    { 0.0f, 0.0f, 0.0f, 1.0f }
-  }
-};
+#define Matrix4Identity \
+(Matrix4) \
+{ \
+  { \
+    { 1.0f, 0.0f, 0.0f, 0.0f }, \
+    { 0.0f, 1.0f, 0.0f, 0.0f }, \
+    { 0.0f, 0.0f, 1.0f, 0.0f }, \
+    { 0.0f, 0.0f, 0.0f, 1.0f } \
+  } \
+} \
 
 forceinline b8 Matrix4Equal(const Matrix4* a, const Matrix4* b)
 {
@@ -91,6 +92,14 @@ forceinline Matrix4 Matrix4Hadamard(const Matrix4* a, const Matrix4* b)
     result.data[i] = Vector4Multiply(&a->data[i], &b->data[i]);
 
   return(result);
+}
+
+forceinline Matrix4* Matrix4HadamardEquals(Matrix4* a, const Matrix4* b)
+{
+	for (usize i = 0; i < 4; i++)
+		Vector4MultiplyEquals(&a->data[i], &b->data[i]);
+
+	return(a);
 }
 
 forceinline Matrix4 Matrix4Rotate(const Radian angle, const Vector3* v)

@@ -134,6 +134,23 @@ forceinline Vector2* Vector2MultiplyEquals(Vector2* a, const Vector2* b)
   return(a);
 }
 
+forceinline Vector2 Vector2Divide(const Vector2* a, const Vector2* b)
+{
+	Vector2 returnValue;
+	returnValue.x = a->x / b->x;
+	returnValue.y = a->y / b->y;
+
+	return(returnValue);
+}
+
+forceinline Vector2* Vector2DivideEquals(Vector2* a, const Vector2* b)
+{
+	a->x = a->x / b->x;
+	a->y = a->y / b->y;
+
+	return(a);
+}
+
 forceinline f32 Vector2Dot(const Vector2* a, const Vector2* b)
 {
   return a->x * b->x + a->y * b->y;

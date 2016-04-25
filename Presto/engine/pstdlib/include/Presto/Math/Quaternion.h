@@ -1,3 +1,4 @@
+
 #ifndef PSTDLIB_MATH_QUATERNION_H
 #define PSTDLIB_MATH_QUATERNION_H
 
@@ -23,10 +24,11 @@ typedef union
     f32 data[4];
 } Quaternion;
 
-const Quaternion QuaternionIdentity =
-{
-  { 0.0f, 0.0f, 0.0f, 1.0f }
-};
+#define QuaternionIdentity \
+(Quaternion) \
+{ \
+	{ 0.0f, 0.0f, 0.0f, 1.0f } \
+}
 
 forceinline b8 QuaternionEqual(const Quaternion* a, const Quaternion* b)
 {

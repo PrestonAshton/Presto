@@ -156,6 +156,25 @@ forceinline Vector3* Vector3MultiplyEquals(Vector3* a, const Vector3* b)
   return(a);
 }
 
+forceinline Vector3 Vector3Divide(const Vector3* a, const Vector3* b)
+{
+	Vector3 returnValue;
+	returnValue.x = a->x / b->x;
+	returnValue.y = a->y / b->y;
+	returnValue.z = a->z / b->z;
+
+	return(returnValue);
+}
+
+forceinline Vector3* Vector3DivideEquals(Vector3* a, const Vector3* b)
+{
+	a->x = a->x / b->x;
+	a->y = a->y / b->y;
+	a->z = a->z / b->z;
+
+	return(a);
+}
+
 forceinline f32 Vector3Dot(const Vector3* a, const Vector3* b)
 {
   return(a->x * b->x + a->y * b->y + a->z * b->z);
