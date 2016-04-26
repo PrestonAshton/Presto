@@ -76,7 +76,7 @@ PSTDLIB_EXPORT int BlankFunction(void);
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 
-#ifdef defined(_MSC_VER)
+#ifdef PRESTO_COMPILER_MSVC
 #pragma section(".CRT$XCU",read)
 #define INITIALIZER2_(f,p) \
         static void f(void); \

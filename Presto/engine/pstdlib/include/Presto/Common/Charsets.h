@@ -21,6 +21,7 @@ typedef wchar_t vchar;
 #define Vstrtok wcstok
 #define Vstrdup wcsdup
 #define Vstrstr wcsstr
+#define Vtolower towlower
 //#define Vstrsep wcstok_r
 #else
 typedef char vchar;
@@ -33,7 +34,11 @@ typedef char vchar;
 #define Vstrdup strdup_s
 #define Vstrstr strstr
 //#define Vstrsep strsep
+#define Vtolower tolower
 #endif
+
+#define Vlowerstr(p) \
+	for ( ; *p; ++p) *p = Vtolower(*p);
 
 #define Vconstcopy(x) \
   usize strSize = (Vstrlen( x ) + 1) * sizeof(vchar); \

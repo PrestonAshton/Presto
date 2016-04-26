@@ -12,9 +12,9 @@ Matrix4 CameraProjection(const Camera* camera)
 	}
 	else if (camera->projectionType == Orthographic)
 	{
-		f32 distance = 0.5 * (camera->farClippingPlane - camera->nearClippingPlane);
+		f32 distance = 0.5f * (camera->farClippingPlane - camera->nearClippingPlane);
 		return(
-			Matrix4Ortho(
+			Matrix4OrthoClipped(
 				-camera->orthographicScale * camera->viewportAspectRatio,
 				camera->orthographicScale + camera->viewportAspectRatio,
 				-camera->orthographicScale,

@@ -61,7 +61,7 @@ forceinline Transform* TransformDivideEquals(Transform* worldSpace, const Transf
 forceinline Vector3 TransformVector3(const Transform* transform, const Vector3* point)
 {
 	Quaternion orientationConjugate = QuaternionConjugate(&transform->orientation);
-	Vector3 positionDifference = Vector3Minus(&transform->position, &point);
+	Vector3 positionDifference = Vector3Minus(&transform->position, point);
 	Vector3 unscaledTransformation = QuaternionMultiplyByVector3(&orientationConjugate, &positionDifference);
 	return(Vector3Divide(&unscaledTransformation, &transform->scale));
 }

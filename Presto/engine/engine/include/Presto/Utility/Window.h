@@ -7,4 +7,7 @@
 void OpenGLGameWindow(void);
 i8 UpdateGLGameWindow(void);
 
+void OpenDX9GameWindow(void);
+i8 UpdateDX9GameWindow(void);
+
 #endif

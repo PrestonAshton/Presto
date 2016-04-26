@@ -9,6 +9,7 @@
 #endif
 
 #include <Presto/Graphics/OpenGL.h>
+#include <Presto/Graphics/DX9RenderPath.h>
 #include <Presto/Graphics/Transform.h>
 #include <Presto/Graphics/Camera.h>
 #include <Presto/MIDI/Midi.h>
