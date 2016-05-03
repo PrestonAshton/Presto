@@ -37,7 +37,7 @@
 #define true 1
 
 #define LOCK_MUTEX(x) \
-	while (heapMutex = true) \
+	while (heapMutex == true) \
 	{} \
 	heapMutex = true
 
@@ -75,6 +75,14 @@ PSTDLIB_EXPORT int BlankFunction(void);
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
+#define KILOBYTES(x) ((x) * 1024LL)
+#define MEGABYTES(x) ((KILOBYTES(x) * 1024LL)
+#define GIGABYTES(x) ((MEGABYTES(x) * 1024LL)
+#define TERABYTES(x) ((GIGABYTES(x) * 1024LL)
+#define PETABYTES(x) ((TERABYTES(x) * 1024LL)
+#define EXABYTES(x) ((PETABYTES(x) * 1024LL)
+#define ZETTABYTES(x) ((EXABYTES(x) * 1024LL)
+#define YOTTABYTES(x) ((ZETTABYTES(x) * 1024LL)
 
 #ifdef PRESTO_COMPILER_MSVC
 #pragma section(".CRT$XCU",read)
@@ -93,5 +101,22 @@ PSTDLIB_EXPORT int BlankFunction(void);
         static void f(void) __attribute__((constructor)); \
         static void f(void)
 #endif
+
+#define WORDSWAP(w)		(((w) >> 8) | \
+						(((w) << 8) & 0xFF00))
+
+#define DWORDSWAP(dw)	(((dw) >> 24) | \
+						(((dw) >> 8) & 0x0000FF00) | \
+						(((dw) << 8) & 0x00FF0000) | \
+						(((dw) << 24) & 0xFF000000))
+
+#ifdef PRESTO_COMPILER_MSVC
+#define ALIGNOF(x) __alignof(x)
+#define TYPEOF(x) __typeof(x)
+#else
+#define ALIGNOF(x) alignof(x)
+#define TYPEOF(x) typeof(x)
+#endif
+
 
 #endif

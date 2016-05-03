@@ -76,6 +76,12 @@ b8 StartEngine(const vchar* dir, const vchar* args)
 	ParseArguments(args);
 	InitInput();
 
+	//PlayMidiFile("");
+	Array foo = ArrayCreate(int);
+	int item = 123;
+	ArrayPushBack(&foo, &item);
+	int dog = *((int*)(ArrayGet(&foo, 0)));
+
 	if (engineGlobals.renderEngine == OpenGL)
 	{
 		OpenGLGameWindow();

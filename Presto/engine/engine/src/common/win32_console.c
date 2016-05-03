@@ -2,7 +2,7 @@
 #include <io.h>
 #include <fcntl.h>
 
-static int maxBuffers = 0;
+static usize maxBuffers = 0;
 static vchar* textBuffers[1024];
 static Colour24 colourBuffers[1024];
 

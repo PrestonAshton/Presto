@@ -8,5 +8,6 @@
 #include <Presto/Common.h>
 #include <Presto/Memory/Memory.h>
 #include <Presto/Math.h>
+#include <Presto/Containers/Array.h>
 
 #endif

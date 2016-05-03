@@ -31,6 +31,7 @@
 #include "common/win32_dx9window.c"
 #include "common/win32_dx9renderpath.c"
 #include "common/win32_console.c"
+#include "common/win32_file.c"
 
 #ifdef PRESTO_STEAM
 #include "common/win32_steam.c"
