@@ -1,4 +1,6 @@
-#ifdef PRESTO_CHARSET_UNICODE
+#pragma comment(lib, "user32.lib")
+
+#ifdef QUEST_CHARSET_UNICODE
 int CALLBACK
 	wWinMain(HINSTANCE instance,
 					HINSTANCE prevInstance,
@@ -25,7 +27,7 @@ int CALLBACK
 		PathRemoveFileSpec(exePath);
 		vchar pathToEngineDLL[MAX_PATH];
 		memcpy(pathToEngineDLL, exePath, MAX_PATH);
-		Vstrcat(pathToEngineDLL, MAX_PATH, V("\\")V(PRESTO_BITSTRING));
+		Vstrcat(pathToEngineDLL, MAX_PATH, V("\\")V(QUEST_BITSTRING));
 		AddDllDirectory(pathToEngineDLL);
 		Vstrcat(pathToEngineDLL, MAX_PATH, V("\\engine.dll"));
 		HMODULE dllHandle = LoadLibraryEx(pathToEngineDLL, NULL, LOAD_LIBRARY_SEARCH_APPLICATION_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32 | LOAD_LIBRARY_SEARCH_USER_DIRS);
@@ -71,7 +73,10 @@ int CALLBACK
 			DWORD exitCode = -1;
 			GetExitCodeProcess(processInfo.hProcess, &exitCode);
 
-			MessageBox(NULL, V("Application Closed!"), V("Foo!"), MB_OK);
+			vchar output[256];
+			Vsprintfu(output, V("Application Closed: %d"), exitCode);
+
+			MessageBox(NULL, output, V("Foo!"), MB_OK);
 		}
 	}
 

@@ -1,0 +1,6 @@
+#include "shared/camera.c"
+#include "shared/common.c"
+#include "shared/engine.c"
+#include "shared/glmodule.c"
+#include "shared/memory.c"
+//#include "shared/rendersystem.c"

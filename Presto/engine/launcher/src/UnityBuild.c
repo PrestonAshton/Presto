@@ -1,6 +1,6 @@
-#include <Presto/Presto.h>
+#include <Quest/Quest.h>
 
-#ifdef PRESTO_SYSTEM_WINDOWS
+#ifdef QUEST_SYSTEM_WINDOWS
 #include <Windows.h>
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
