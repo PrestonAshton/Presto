@@ -14,7 +14,6 @@ Presto/game/*
 *.vs
 *.VC.*
 *.sdf
-*.vcxproj*
 
 obj32
 obj64
