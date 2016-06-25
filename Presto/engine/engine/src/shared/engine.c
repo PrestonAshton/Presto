@@ -25,7 +25,8 @@ void ParseArguments(const vchar* args)
 		if (Vstrequal(token, V("console")))
 		{
 			OpenConsole();
-			WriteLineToConsole(V("Console Opened!"), (Colour24) { 255, 0, 0 });
+			MSG(V("Console Opened!"));
+			Assert(1 == 0);
 		}
 
 		if (Vstrequal(token, V("renderer")))
@@ -44,7 +45,7 @@ void ReadGameInfo(void)
 
 dontinline void RenderStub()
 {
-			MessageBox(NULL, V("Render Stub Called"), V("Foo!"), MB_OK);
+	WARN(V("Invalid Renderer!"));	
 }
 
 void BeginRender(void)
@@ -61,8 +62,10 @@ void BeginRender(void)
 
 			//GLRender();
 			//MessageBox(NULL, V("Blah!"), V("Blah!"), MB_OK);
-			MessageBox(NULL, V("Rendering Frame..."), V("Foo!"), MB_OK);
+			//MessageBox(NULL, V("Rendering Frame..."), V("Foo!"), MB_OK);
 			RenderStub();
+
+			UpdateConsole();
 
 			//PollInputDevices();
 		//}
@@ -76,20 +79,22 @@ void TestRenderer(void)
 
 void SetRenderer(const vchar* targs)
 {
-	static usize* currentRenderer = (usize*)(&RenderStub);
-	usize* rendererBeginPtr = (usize*)(&BeginRender);
+	static void* currentRenderer = (void*)(&RenderStub);
+	void* rendererBeginPtr = (void*)(&BeginRender);
 
+	//DBUG_PTR(rendererBeginPtr);
 	for(;;)
 	{
-		if (*rendererBeginPtr == (usize) currentRenderer)
+		if (*((usize*)(rendererBeginPtr)) == ((usize)(currentRenderer)))
 		{
 			MessageBox(NULL, V("Found function!"), V("Alert!"), MB_OK);
-			*rendererBeginPtr = (usize)(&TestRenderer);
+			*((usize*)(rendererBeginPtr)) = (usize)(&TestRenderer);
 			BeginRender();
 			break;
 		}
-		rendererBeginPtr++;
+		++((u8*)(rendererBeginPtr));
 	}
+	BeginRender();
 }
 
 
@@ -104,13 +109,9 @@ b8 StartEngine(const vchar* dir, const vchar* args)
 	ParseArguments(args);
 	InitInput();
 
-	//PlayMidiFile("");
-	Array foo = ArrayCreate(int);
-	int item = 123;
-	ArrayPushBack(&foo, &item);
-	int dog = *((int*)(ArrayGet(&foo, 0)));
-
 	SetRenderer(V("dog"));
+
+
 
 	return(true);
 }

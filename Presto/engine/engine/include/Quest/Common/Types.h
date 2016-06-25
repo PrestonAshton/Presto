@@ -3,6 +3,7 @@
 
 #include <Quest/Common/BasicDefinitions.h>
 #include <Quest/Common/Architectures.h>
+#include <Quest/Common/Compilers.h>
 #include <stdio.h>
 
 typedef char a8;
@@ -55,30 +56,46 @@ typedef b8 bool;
 #define W(string) _W(string)
 
 #ifdef QUEST_CHARSET_UNICODE
+#ifdef QUEST_COMPILER_MSVC
+typedef wchar_t vchar;
+#else
 typedef u16 vchar;
+#endif
 #define _V(string) L ## string
 #define V(string) _V(string)
 #define Vsprintfu swprintf
+#define Vprintf wprintf
 #define Vsprintf swprintf_s
 #define Vstrcmp wcscmp
 #define Vstrcat wcscat_s
+#define Vstrcatu wcscat
 #define Vstrtok(x, y) wcstok(x, y, NULL)
 #define Vstrdup wcsdup
 #define Vstrstr wcsstr
 #define Vtolower towlower
+#define Vfopen _wfopen
+#define Vvsprintf vswprintf
+#define Vstrftime wcsftime
+#define Vstrcopy wcsncpy
 //#define Vstrsep wcstok_r
 #else
 typedef u8 vchar;
 #define V(string) string
 #define Vsprintfu sprintf
+#define Vprintf printf
 #define Vsprintf sprintf_s
 #define Vstrcmp strcmp
 #define Vstrcat strcat_s
+#define Vstrcatu strcat
 #define Vstrtok strtok
 #define Vstrdup strdup_s
 #define Vstrstr strstr
 //#define Vstrsep strsep
 #define Vtolower tolower
+#define Vfopen fopen
+#define Vvsprintf vsprintf
+#define Vstrftime strftime
+#define Vstrcopy strncpy
 #endif
 
 #define Vconstcopy(x) \
@@ -111,7 +128,7 @@ forceinline b8 Vstrequal(const vchar* a, const vchar* b)
 		ourB++;
 	} while ((*ourA) != V('\0'));
 
-	return(false);
+	return(true);
 }
 
 #endif

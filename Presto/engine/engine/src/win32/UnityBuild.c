@@ -6,7 +6,6 @@
 #include "win32/dx9renderpath.c"
 #include "win32/dx9window.c"
 #include "win32/file.c"
-#include "win32/glwindow.c"
 #include "win32/input.c"
 
 #ifdef QUEST_STEAM

@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
-#include <Quest/Graphics/OpenGL.h>
 
 #if defined(__APPLE__)
 #include <dlfcn.h>

@@ -2,19 +2,22 @@
 #define QUEST_QUEST_H
 
 #include <Quest/Common.h>
+#ifndef LAUNCHER
 #include <Quest/Memory.h>
 #include <Quest/Math.h>
 #include <Quest/Containers.h>
 #include <Quest/Engine.h>
 #include <Quest/Utility.h>
+#include <Quest/Graphics.h>
 
-#include <Quest/Graphics/OpenGL.h>
-#include <Quest/Graphics/DX9RenderPath.h>
-#include <Quest/Graphics/Transform.h>
-#include <Quest/Graphics/Camera.h>
+#include <Quest/UI.h>
+
+#include <Quest/Modules/OpenGL.h>
+#include <Quest/Modules/DirectX9.h>
 
 #ifdef QUEST_STEAM
 #include <Quest/Steam.h>
+#endif
 #endif
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef QUEST_GRAPHICS_DIMENSIONS_H
 #define QUEST_GRAPHICS_DIMENSIONS_H
 
-#inlude <Quest/Common.h>
+#include <Quest/Common.h>
 
 typedef struct
 {

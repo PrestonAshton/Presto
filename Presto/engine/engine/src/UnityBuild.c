@@ -14,5 +14,8 @@
 #include "linux/UnityBuild.c"
 #endif
 
+// OpenGL module
+#include "modules/opengl/UnityBuild.c"
 
-#pragma warning(pop)
+
+//#pragma warning(pop)

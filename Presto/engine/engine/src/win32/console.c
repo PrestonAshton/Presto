@@ -1,94 +1,70 @@
-static usize maxBuffers = 0;
-static vchar* textBuffers[1024];
-static Colour24 colourBuffers[1024];
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+#include <windows.h>
+#include <stdarg.h>
+#include <wchar.h>
 
-static LRESULT CALLBACK QuestConsoleWindowCallback(HWND windowHandle, UINT message,
-	WPARAM wParam, LPARAM lParam) {
-	static LRESULT result = 0;
 
-	switch (message) {
-	case WM_CREATE: {
-	} break;
-	case WM_SIZE: {
-	} break;
-	case WM_PAINT: {
-		PAINTSTRUCT paint;
-		HDC deviceContext = BeginPaint(windowHandle, &paint);
+HANDLE handle_out;
+HANDLE handle_in;
 
-		int height = -MulDiv(10, GetDeviceCaps(deviceContext, LOGPIXELSY), 72);
-
-		HFONT font = CreateFont(
-			height, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE,
-			DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-			CLEARTYPE_QUALITY, FF_DONTCARE, V("Consolas"));
-
-		SelectObject(deviceContext, font);
-
-		for (usize i = 0; i < maxBuffers; i++)
-		{
-			RECT paintPos = paint.rcPaint;
-			paintPos.top = (LONG)((-height) * i);
-			COLORREF colour = RGB(colourBuffers[i].r, colourBuffers[i].g, colourBuffers[i].b);
-			SetTextColor(deviceContext, colour);
-			DrawText(deviceContext, textBuffers[i], -1, &paintPos, DT_LEFT | DT_EDITCONTROL);
-		}
-		EndPaint(windowHandle, &paint);
-	} break;
-	case WM_DESTROY: {
-	} break;
-	case WM_CLOSE: {
-		DestroyWindow(windowHandle);
-	} break;
-	case WM_ACTIVATEAPP: {
-	} break;
-	default: {
-		result = DefWindowProc(windowHandle, message, wParam, lParam);
-	} break;
-	}
-
-	return (result);
-}
+CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 void OpenConsole(void)
 {
-	WNDCLASS windowClass = { 0 };
-	windowClass.style = CS_OWNDC;
-	windowClass.lpfnWndProc = QuestConsoleWindowCallback;
-	windowClass.hInstance = GetModuleHandle(NULL);
-	// windowClass.hIcon =
-	windowClass.lpszClassName = V("QuestConsoleWindowClass");
+	AllocConsole();
 
-	if (RegisterClass(&windowClass) == (int)NULL) {
-		return;
-	}
+	handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
+	FILE* hf_out = _fdopen(hCrt, "w");
+	setvbuf(hf_out, NULL, _IONBF, 1);
+	*stdout = *hf_out;
 
-	HWND windowHandle = CreateWindowEx(
-		0, windowClass.lpszClassName, V("Quest Developer Console"),
-		(WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME) | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 450,
-		NULL, NULL, windowClass.hInstance, NULL);
+	handle_in = GetStdHandle(STD_INPUT_HANDLE);
+	hCrt = _open_osfhandle((long)handle_in, _O_TEXT);
+	FILE* hf_in = _fdopen(hCrt, "r");
+	setvbuf(hf_in, NULL, _IONBF, 128);
+	*stdin = *hf_in;
 
-	if (windowHandle == NULL) {
-		return;
-	}
+	freopen("CONIN$", "r", stdin);
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+
+	SetConsoleTitle(V("Quest Developer Console"));
 }
 
-void WriteToConsole(const vchar* text, Colour24 colour)
+void WriteToConsole(ConsoleColour colour, const vchar* fmt, ...)
 {
-	usize textSize = Vstrlen(text + 1) * sizeof(vchar);
-	textBuffers[maxBuffers] = malloc(textSize);
-	copyMemory(text, textBuffers[maxBuffers], textSize + 4);
-	colourBuffers[maxBuffers] = colour;
-	maxBuffers++;
+	usize textLength = Vstrlen(fmt);
+	vchar* textBuffer[1024];
+
+	va_list args;
+	va_start(args, fmt);
+	Vvsprintf(textBuffer, 1024, fmt, args);
+	va_end(args);
+
+	SetConsoleTextAttribute(handle_out, colour);
+
+	WriteConsole(handle_out, textBuffer, textLength, NULL, NULL);
 }
 
-void WriteLineToConsole(const vchar* text, Colour24 colour)
+void UpdateConsole(void)
 {
-	usize textLength = Vstrlen(text);
+}
+
+void WriteLineToConsole(ConsoleColour colour, const vchar* fmt, ...)
+{
+	usize textLength = Vstrlen(fmt);
 	usize textSize = (textLength + 2) * sizeof(vchar);
 	vchar* textBuffer = malloc(textSize);
-	copyMemory(text, textBuffer, textSize);
+	copyMemory(fmt, textBuffer, textSize);
 	textBuffer[textLength] = V('\n');
 	textBuffer[textLength + 1] = V('\0');
 
-	WriteToConsole(textBuffer, colour);
+	va_list args;
+	va_start(args, fmt);
+	WriteToConsole(colour, fmt, args);
+	va_end(args);
 }
+

@@ -8,16 +8,14 @@ set "unitybuild=engine/engine/src/UnityBuild.c"
 set "unitybuildlauncher=engine/launcher/src/UnityBuild.c"
 set "includedir=engine/engine/include"
 set "warnings=-Wno-invalid-token-paste -Wno-int-conversion -Wno-microsoft-include"
-set "definitions=-D_CRT_SECURE_NO_WARNINGS -DUNICODE"
+set "definitions=-D_CRT_SECURE_NO_WARNINGS -DUNICODE -DLAUNCHER"
 set "tempdir=temp"
 set "outdir=game/build"
 
 if exist %clangpath% (
   echo Found Clang...
-  echo Building Engine...
-  %clangpath% %unitybuild% -Wl,-map -I%includedir% %warnings% %definitions% -g -DQUEST -shared -o %outdir%/bin64/engine.dll
   echo Building Launcher...
-  %clangpath% %unitybuildlauncher% -I%includedir% %warnings% %definitions% -DLAUNCHER -g -o %outdir%/quest64.exe
+  %clangpath% %unitybuildlauncher% -I%includedir% %warnings% %definitions% -g -o %outdir%/quest64.exe
 ) else (
   echo Clang is not installed on your system!
   echo http://llvm.org/releases/download.html

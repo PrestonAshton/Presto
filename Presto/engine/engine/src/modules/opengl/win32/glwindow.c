@@ -40,7 +40,6 @@ static void InitWGLFunctions() {
 }
 
 static HGLRC glRenderingContext;
-static HDC deviceContext;
 
 static LRESULT CALLBACK QuestGLWindowCallback(HWND windowHandle, UINT message,
                                                WPARAM wParam, LPARAM lParam) {

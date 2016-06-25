@@ -73,10 +73,10 @@ int CALLBACK
 			DWORD exitCode = -1;
 			GetExitCodeProcess(processInfo.hProcess, &exitCode);
 
-			vchar output[256];
-			Vsprintfu(output, V("Application Closed: %d"), exitCode);
+			//vchar output[256];
+			//Vsprintfu(output, V("Application Closed: %d"), exitCode);
 
-			MessageBox(NULL, output, V("Foo!"), MB_OK);
+			//MessageBox(NULL, output, V("Foo!"), MB_OK);
 		}
 	}
 
