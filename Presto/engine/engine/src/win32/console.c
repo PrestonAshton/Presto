@@ -32,6 +32,7 @@ void OpenConsole(void)
 	freopen("CONOUT$", "w", stderr);
 
 	SetConsoleTitle(V("Quest Developer Console"));
+    SetConsoleOutputCP(65001);
 }
 
 void WriteToConsole(ConsoleColour colour, const vchar* fmt, ...)

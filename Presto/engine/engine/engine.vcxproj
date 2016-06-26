@@ -69,10 +69,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>D:\GitHub\Presto\Presto\game\build\bin64\</OutDir>
-    <IntDir>D:\GitHub\Presto\Presto\game\build\bin64\temp\</IntDir>
+    <OutDir>C:\Coding\OtherPeoplesProjects\Presto\Presto\game\build\bin64\</OutDir>
+    <IntDir>C:\Coding\OtherPeoplesProjects\Presto\Presto\game\build\bin64\temp\</IntDir>
     <TargetName>engine</TargetName>
-    <IncludePath>D:\GitHub\Presto\Presto\engine\engine\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Coding\OtherPeoplesProjects\Presto\Presto\engine\engine\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -84,16 +84,17 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MinSpace</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <Link>
       <MapExports>true</MapExports>
-      <MapFileName>D:\GitHub\Presto\Presto\game\build\bin64\engine.map</MapFileName>
+      <MapFileName>C:\Coding\OtherPeoplesProjects\Presto\Presto\game\build\bin64\engine.map</MapFileName>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

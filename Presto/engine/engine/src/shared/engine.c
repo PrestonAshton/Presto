@@ -26,6 +26,8 @@ void ParseArguments(const vchar* args)
 		{
 			OpenConsole();
 			MSG(V("Console Opened!"));
+            OK(V("Test!"));
+            FAIL(V("Oh noes!"));
 			Assert(1 == 0);
 		}
 
@@ -74,6 +76,7 @@ void BeginRender(void)
 
 void TestRenderer(void)
 {
+    const int foo = 12;
 	MessageBox(NULL, V("It worked!"), V("Foo!"), MB_OK);
 }
 
@@ -82,14 +85,17 @@ void SetRenderer(const vchar* targs)
 	static void* currentRenderer = (void*)(&RenderStub);
 	void* rendererBeginPtr = (void*)(&BeginRender);
 
+    //usize difference = currentRenderer
 	//DBUG_PTR(rendererBeginPtr);
 	for(;;)
 	{
-		if (*((usize*)(rendererBeginPtr)) == ((usize)(currentRenderer)))
+		if (*((u8*)(rendererBeginPtr)) == 0xE8)
 		{
+            ++((u8*)(rendererBeginPtr));
+            isize difference = (isize)(rendererBeginPtr) - (isize)(currentRenderer);
 			MessageBox(NULL, V("Found function!"), V("Alert!"), MB_OK);
-			*((usize*)(rendererBeginPtr)) = (usize)(&TestRenderer);
-			BeginRender();
+			//*((usize*)(rendererBeginPtr)) = (usize)(&TestRenderer);
+			//BeginRender();
 			break;
 		}
 		++((u8*)(rendererBeginPtr));

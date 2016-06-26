@@ -69,9 +69,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\GitHub\Presto\Presto\engine\engine\include;</IncludePath>
-    <OutDir>D:\GitHub\Presto\Presto\game\build\</OutDir>
-    <IntDir>D:\GitHub\Presto\Presto\game\build\temp\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Coding\OtherPeoplesProjects\Presto\Presto\engine\engine\include</IncludePath>
+    <OutDir>C:\Coding\OtherPeoplesProjects\Presto\Presto\game\build\</OutDir>
+    <IntDir>C:\Coding\OtherPeoplesProjects\Presto\Presto\game\build\temp\</IntDir>
     <TargetName>quest64</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
