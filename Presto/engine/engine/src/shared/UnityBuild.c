@@ -2,4 +2,5 @@
 #include "shared/common.c"
 #include "shared/engine.c"
 #include "shared/memory.c"
+#include "shared/image.c"
 //#include "shared/rendersystem.c"

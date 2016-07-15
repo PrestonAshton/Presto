@@ -2,7 +2,10 @@
 #define QUEST_MATH_VECTOR2_H
 
 #include <Quest/Common.h>
+
+DISABLE_WARNINGS
 #include <math.h>
+ENABLE_WARNINGS
 
 typedef union
 {

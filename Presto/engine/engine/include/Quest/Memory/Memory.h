@@ -12,22 +12,15 @@ extern vol totalHeapAllocatedSpace;
 extern vol totalheapAllocationCount;
 extern b8 heapMutex;
 
+extern void* memcpy(
+	void* _Dst,
+	void const* _Src,
+	size_t      _Size
+);
+
 forceinline void copyMemory(const void* from, void* to, usize length)
 {
-	while (length--)
-	{
-		*((u8*)to) = *((u8*)from);
-		#ifdef QUEST_COMPILER_MSVC
-		((u8*)(to))++;
-		((u8*)(from))++;
-		#else
-		to++;
-		from++;
-		#endif
-
-		//*((u8*)to)++ = *((u8*)from)++;
-		// doesn't work on GCC/Clang, this is a more cross-platform friendly method.
-	}
+	memcpy(to, from, length);
 }
 
 typedef struct

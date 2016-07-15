@@ -5,7 +5,10 @@
 #include <Quest/Common/Architectures.h>
 #include <Quest/Common/BasicDefinitions.h>
 #include <Quest/Memory/Memory.h>
+
+DISABLE_WARNINGS
 #include <Windows.h>
+ENABLE_WARNINGS
 
 forceinline vchar* GetLastErrorAsString(void)
 {

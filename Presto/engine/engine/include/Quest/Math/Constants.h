@@ -1,8 +1,10 @@
-#ifndef PSTDLIB_MATH_CONSTANTS_H
-#define PSTDLIB_MATH_CONSTANTS_H
+#ifndef QUEST_MATH_CONSTANTS_H
+#define QUEST_MATH_CONSTANTS_H
 
+DISABLE_WARNINGS
 #include <math.h>
 #include <float.h>
+ENABLE_WARNINGS
 
 #define Epsilon_32     FLT_EPSILON
 #define Third_32       0.333333333f

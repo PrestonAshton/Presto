@@ -1,8 +1,10 @@
+#ifndef QUEST_MATH_QUATERNION_H
+#define QUEST_MATH_QUATERNION_H
 
-#ifndef PSTDLIB_MATH_QUATERNION_H
-#define PSTDLIB_MATH_QUATERNION_H
-
+DISABLE_WARNINGS
 #include <math.h>
+ENABLE_WARNINGS
+
 #include <Quest/Math/Vector4.h>
 #include <Quest/Math/Vector3.h>
 #include <Quest/Math/Matrix4.h>

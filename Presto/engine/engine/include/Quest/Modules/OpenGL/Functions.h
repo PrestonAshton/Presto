@@ -1,6 +1,8 @@
 #ifndef POINTER_C_GENERATED_HEADER_OPENGL_H
 #define POINTER_C_GENERATED_HEADER_OPENGL_H
 
+DISABLE_WARNINGS
+
 #if defined(__glew_h__) || defined(__GLEW_H__)
 #error Attempt to include auto-generated header after including glew.h
 #endif
@@ -2156,5 +2158,7 @@ int ogl_IsVersionGEQ(int majorVersion, int minorVersion);
 #ifdef __cplusplus
 }
 #endif /*__cplusplus*/
+
+ENABLE_WARNINGS
 
 #endif /*POINTER_C_GENERATED_HEADER_OPENGL_H*/

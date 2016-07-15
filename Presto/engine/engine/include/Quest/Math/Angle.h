@@ -1,5 +1,5 @@
-#ifndef PSTDLIB_MATH_ANGLE_H
-#define PSTDLIB_MATH_ANGLE_H
+#ifndef QUEST_MATH_ANGLE_H
+#define QUEST_MATH_ANGLE_H
 
 #include <Quest/Math/Constants.h>
 

@@ -23,14 +23,14 @@ typedef struct
 typedef struct
 {
   Vector3 position;
-  Attenuation attenuation
+  Attenuation attenuation;
   f32 range;
   BaseLight base;
 } PointLight;
 
-forceinline void PointLightCalculateRange(const PointLight* light)
+forceinline void PointLightCalculateRange(PointLight* light)
 {
-  f32 i = brightness * (f32)max(light->base->colour.r, max(light->base->colour.g, light->base->colour.b));
+  f32 i = light->base.brightness * (f32)MAX(light->base.colour.r, MAX(light->base.colour.g, light->base.colour.b));
 
   f32 r = -light->attenuation.linear +
           sqrtf(light->attenuation.linear * light->attenuation.linear - 4.0f * light->attenuation.quadratic * (light->attenuation.constant - i));
@@ -47,9 +47,9 @@ typedef struct
   PointLight base;
 } SpotLight;
 
-forceinline void SpotLightCalculateRange(const SpotLight* light)
+forceinline void SpotLightCalculateRange(SpotLight* light)
 {
-  PointLightCalculateRange(light->base);
+  PointLightCalculateRange(&(light->base));
 }
 
 #endif

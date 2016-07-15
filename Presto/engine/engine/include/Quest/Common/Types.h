@@ -4,7 +4,10 @@
 #include <Quest/Common/BasicDefinitions.h>
 #include <Quest/Common/Architectures.h>
 #include <Quest/Common/Compilers.h>
+
+DISABLE_WARNINGS
 #include <stdio.h>
+ENABLE_WARNINGS
 
 typedef char a8;
 typedef short a16;

@@ -1,6 +1,7 @@
 #ifndef QUEST_COMMON_H
 #define QUEST_COMMON_H
 
+#include <Quest/Common/Warnings.h>
 #include <Quest/Common/Architectures.h>
 #include <Quest/Common/Assert.h>
 #include <Quest/Common/BasicDefinitions.h>

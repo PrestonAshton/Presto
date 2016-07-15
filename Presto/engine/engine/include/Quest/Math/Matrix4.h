@@ -1,5 +1,5 @@
-#ifndef PSTDLIB_MATH_MATRIX4_H
-#define PSTDLIB_MATH_MATRIX4_H
+#ifndef QUEST_MATH_MATRIX4_H
+#define QUEST_MATH_MATRIX4_H
 
 #include <Quest/Math/Angle.h>
 #include <Quest/Math/Vector3.h>

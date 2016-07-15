@@ -1,147 +1,181 @@
-#ifndef PSTDLIB_CONTAINERS_ARRAY_H
-#define PSTDLIB_CONTAINERS_ARRAY_H
+#ifndef QUEST_CONTAINERS_ARRAY_H
+#define QUEST_CONTAINERS_ARRAY_H
 
 #include <Quest/Common.h>
 
-typedef struct
-{
-	usize length;
-	usize capacity;
-	usize objectSize;
-	usize objectAlignment;
-	void* data;
-} Array;
+#define DEFINE_ARRAY_STRUCT_64(type)																																						\
+typedef struct																																												\
+{																																															\
+	type * data;																																											\
+																																															\
+	u32 length;																																												\
+	u32 capacity;																																											\
+} Array_ ## type ;
 
-#define ArrayCreate(x) \
-	(Array){0, 0, sizeof(x), ALIGNOF(x), 0}
+#define DEFINE_ARRAY_STRUCT_32(type)																																						\
+typedef struct																																												\
+{																																															\
+	type * data;																																											\
+	u32 padding;																																											\
+																																															\
+	u32 length;																																												\
+	u32 capacity;																																											\
+} Array_ ## type ;
 
-// returns an array*
-#define ArrayCreateFixed(x, size) \
-	Array* __array = spawn(sizeof(Array) + (size * sizeof(x))); \
-	*__array = ArrayCreate(x); \
-	__array->data = __array + 1; \
-	__array
-	
-usize ArraySize(const Array* a);
-void ArrayEquals(Array* a, const Array* b);
-void ArrayPushBack(Array* a, const void* item);
-void ArrayDele(Array* a);
-b8 ArrayEmpty(const Array* a);
-void* ArrayBegin(Array* a);
-void* ArrayEnd(Array* a);
-void* ArrayBack(Array* a);
-void ArrayClear(Array* a);
-void ArrayTrim(Array* a);
-usize ArrayAppend(Array* a, const void* items, usize count);
-void ArrayResize(Array* a, usize length);
-void ArraySetCapacity(Array* a, usize capacity);
-void ArrayReserve(Array* a, usize capacity);
-void ArrayGrow(Array* a, usize minCapacity);
+#define DEFINE_ARRAY_CHECK(type)																																							\
+STATIC_ASSERT(sizeof( Array_ ## type ) == 16, Size_Of_Array_ ## type );																														\
+// <-- Array | 128 bits | 16 bytes -->
 
-#define ArrayGet(array, index) \
-	((void*)((i8*)((array)->data) + (index * (array)->objectSize))) \
+#ifdef QUEST_ARCHITECTURE_X32
+#define DEFINE_ARRAY_STRUCT(type) DEFINE_ARRAY_STRUCT_32(type)
+#else
+#define DEFINE_ARRAY_STRUCT(type) DEFINE_ARRAY_STRUCT_64(type)
+#endif
 
-forceinline usize ArraySize(const Array* a)
-{
-	return(a->length * a->objectSize);
-}
+#define DEFINE_ARRAY_FUNCTONS(type)																																							\
+type * Array_ ## type ## GetPtr(Array_ ## type * a, u32 index);																																\
+type Array_ ## type ## GetValue(Array_ ## type * a, u32 index);																																\
+void Array_ ## type ## Set(Array_ ## type * a, u32 index, type value);																														\
+u32 Array_ ## type ## Size(const Array_ ## type * a);																																		\
+void Array_ ## type ## Equals(Array_ ## type * a, const Array_ ## type * b);																												\																											\
+void Array_ ## type ## PushBack(Array_ ## type * a, type item);																																\
+void Array_ ## type ## Dele(Array_ ## type * a);																																			\
+b8 Array_ ## type ## Empty(const Array_ ## type * a);																																		\
+void* Array_ ## type ## Begin(Array_ ## type * a);																																			\
+void* Array_ ## type ## End(Array_ ## type * a);																																			\
+void* Array_ ## type ## Back(Array_ ## type * a);																																			\
+void Array_ ## type ## Clear(Array_ ## type * a);																																			\
+void Array_ ## type ## Trim(Array_ ## type * a);																																			\
+u32 Array_ ## type ## Append(Array_ ## type * a, const type * items, u32 count);																											\
+void Array_ ## type ## Resize(Array_ ## type * a, u32 length);																																\
+void Array_ ## type ## SetCapacity(Array_ ## type * a, u32 capacity);																														\
+void Array_ ## type ## Reserve(Array_ ## type * a, u32 capacity);																															\
+void Array_ ## type ## Grow(Array_ ## type * a, u32 minCapacity);
 
-forceinline void ArrayEquals(Array* a, const Array* b)
-{
-	ArrayResize(a, b->length);
-	memcpy(a->data, b->data, ArraySize(b));
-}
 
-forceinline void ArrayPushBack(Array* a, const void* item)
-{
-	if (a->length == a->capacity)
-		ArrayGrow(a, 0);
+#define DEFINE_ARRAY_FUNCTION_IMPLEMENTATIONS(type)																																			\
+																																															\
+forceinline type * Array_ ## type ## GetPtr(Array_ ## type * a, u32 index)																													\
+{																																															\
+	Assert(index < a->length);																																								\
+	return data + index;																																									\
+}																																															\
+																																															\
+forceinline type Array_ ## type ## GetValue(Array_ ## type * a, u32 index)																													\
+{																																															\
+	Assert(index < a->length);																																								\
+	return *(data + index);																																									\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Set(Array_ ## type * a, u32 index, type value)																											\
+{																																															\
+	*( Array_ ## type ## GetPtr(a, index) ) = value;																																		\
+}																																															\
+																																															\
+forceinline u32 Array_ ## type ## Size(const Array_ ## type * a)																															\
+{																																															\
+	return a->length * sizeof( type );																																						\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Equals(Array_ ## type * a, const Array_ ## type * b)																										\
+{																																															\
+	Array_ ## type ## Resize( a, b->length );																																				\
+	copyMemory(b->data, a->data, Array_ ## type ## Size(b));																																\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## PushBack(Array_ ## type * a, type item)																													\
+{																																															\
+	if (a->length == a->capacity)																																							\
+		Array_ ## type ## Grow(a, 0);																																						\
+	Array_ ## type ## Set(a, a->length, item);																																				\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Dele(Array_ ## type * a)																																	\
+{																																															\
+	Assert(a->length > 0);																																									\
+	a->length--;																																											\
+}																																															\
+																																															\
+forceinline b8 Array_ ## type ## Empty(const Array_ ## type * a)																															\
+{																																															\
+	return a->length == 0;																																									\
+}																																															\
+																																															\
+forceinline void* Array_ ## type ## Begin(Array_ ## type * a)																																\
+{																																															\
+	return a->data;																																											\
+}																																															\
+																																															\
+forceinline void* Array_ ## type ## End(Array_ ## type * a)																																	\
+{																																															\
+	return a->data + a->length;																																								\
+}																																															\
+																																															\
+forceinline void* Array_ ## type ## Back(Array_ ## type * a)																																\
+{																																															\
+	return a->data + a->length - 1;																																							\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Clear(Array_ ## type * a)																																\
+{																																															\
+	Array_ ## type ## Resize(a, 0);																																							\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Trim(Array_ ## type * a)																																	\
+{																																															\
+	Array_ ## type ## SetCapacity(a, a->length);																																			\
+}																																															\
+																																															\
+forceinline u32 Array_ ## type ## Append(Array_ ## type * a, const type * items, u32 count)																									\
+{																																															\
+	if (a->capacity <= a->length + count)																																					\
+		Array ## type ## Grow(a, a->length + count);																																		\
+	copyMemory(items, a->data + length, count * sizeof( type ) );																															\
+	return a->length += count;																																								\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Resize(Array_ ## type * a, u32 length)																													\
+{																																															\
+	if (length > a->capacity)																																								\
+		Array ## type ## Grow(a, length);																																					\
+	a->length = length;																																										\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## SetCapacity(Array_ ## type * a, u32 capacity)																											\
+{																																															\
+	if (capacity == a->capacity)																																							\
+		return;																																												\
+																																															\
+	if (capacity < a->length)																																								\
+		ArrayResize(a, capacity);																																							\
+																																															\
+	type * data = NULL;																																										\
+	data = spawn(capacity * sizeof(type));																																					\
+	copyMemory(a->data, data, Array_ ## type ## Size(a) );																																	\
+	murder(a->data);																																										\
+	a->data = data;																																											\
+	a->capacity = capacity;																																									\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Reserve(Array_ ## type * a, u32 capacity)																												\
+{																																															\
+	if (capacity > a->capacity)																																								\
+		Array_ ## type ## SetCapacity(a, capacity);																																			\
+}																																															\
+																																															\
+forceinline void Array_ ## type ## Grow(Array_ ## type * a, u32 minCapacity)																												\
+{																																															\
+	u32 capacity = 2 * a->capacity + 2;																																						\
+	if (capacity < minCapacity)																																								\
+		capacity = minCapacity;																																								\
+																																															\
+	Array ## type ## SetCapacity(a, capacity);																																				\
+}																																															\
 
-	memcpy(ArrayGet(a, a->length++), item, a->objectSize);
-}
-
-forceinline void ArrayDele(Array* a)
-{
-	Assert(a->length > 0);
-	a->length--;
-}
-
-forceinline b8 ArrayEmpty(const Array* a)
-{
-	return(a->length == 0);
-}
-
-forceinline void* ArrayBegin(Array* a)
-{
-	return(a->data);
-}
-
-forceinline void* ArrayEnd(Array* a)
-{
-	return((i8*)(a->data) + ArraySize(a));
-}
-
-forceinline void* ArrayBack(Array* a)
-{
-	return((i8*)(a->data) + ArraySize(a) - a->objectSize);
-}
-
-forceinline void ArrayClear(Array* a)
-{
-	ArrayResize(a, 0);
-}
-
-forceinline void ArrayTrim(Array* a)
-{
-	ArraySetCapacity(a, a->length);
-}
-
-forceinline usize ArrayAppend(Array* a, const void* items, usize count)
-{
-	if (a->capacity <= a->length + count)
-		ArrayGrow(a, a->length + count);
-
-	memcpy((i8*)(a->data) + ArraySize(a), items, count * a->objectSize);
-	return(a->length += count);
-}
-
-forceinline void ArrayResize(Array* a, usize length)
-{
-	if (length > a->capacity)
-		ArrayGrow(a, length);
-
-	a->length = length;
-}
-
-forceinline void ArraySetCapacity(Array* a, usize capacity)
-{
-	if (capacity == a->capacity)
-		return;
-
-	if (capacity < a->length)
-		ArrayResize(a, capacity);
-
-	void* data = NULL;
-	data = heapAllocate(capacity * a->objectSize, a->objectAlignment);
-	memcpy(data, a->data, ArraySize(a));
-	heapDeallocate(a->data);
-	a->data = data;
-	a->capacity = capacity;
-}
-
-forceinline void ArrayReserve(Array* a, usize capacity)
-{
-	if (capacity > a->capacity)
-		ArraySetCapacity(a, capacity);
-}
-
-forceinline void ArrayGrow(Array* a, usize minCapacity)
-{
-	usize capacity = 2 * a->capacity + 2;
-	if (capacity < minCapacity)
-		capacity = minCapacity;
-
-	ArraySetCapacity(a, capacity);
-}
+#define DEFINE_ARRAY(type)																																									\
+			DEFINE_ARRAY_STRUCT(type)																																						\
+			DEFINE_ARRAY_CHECK(type)																																						\
+			DEFINE_ARRAY_FUNCTONS(type)																																						\
+			DEFINE_ARRAY_FUNCTION_IMPLEMENTATIONS(type)																																		\
 
 #endif

@@ -1,4 +1,6 @@
+DISABLE_WARNINGS
 #include <stdio.h>
+ENABLE_WARNINGS
 
 void ParseArguments(const vchar* args)
 {
@@ -45,7 +47,7 @@ void ReadGameInfo(void)
 
 dontinline void RenderStub()
 {
-	WARN(V("Invalid Renderer!"));	
+	WARN(V("Invalid Renderer!"));
 }
 
 void BeginRender(void)
@@ -54,22 +56,26 @@ void BeginRender(void)
 	//{
 		//OpenGLGameWindow();
 
-		engineGlobals.isRunning = true;
-		while (engineGlobals.isRunning)
-		{
-			//if (UpdateGLGameWindow() == 0)
-			//	engineGlobals.isRunning = false;
+	/*engineGlobals.isRunning = true;
+	while (engineGlobals.isRunning)
+	{
+		//if (UpdateGLGameWindow() == 0)
+		//	engineGlobals.isRunning = false;
 
-			//GLRender();
-			//MessageBox(NULL, V("Blah!"), V("Blah!"), MB_OK);
-			//MessageBox(NULL, V("Rendering Frame..."), V("Foo!"), MB_OK);
-			RenderStub();
+		//GLRender();
+		//MessageBox(NULL, V("Blah!"), V("Blah!"), MB_OK);
+		//MessageBox(NULL, V("Rendering Frame..."), V("Foo!"), MB_OK);
+		RenderStub();
 
-			UpdateConsole();
+		UpdateConsole();
 
-			//PollInputDevices();
-		//}
-		}
+		//PollInputDevices();
+	//}
+	}*/
+
+	engineGlobals.renderSystem->RenderFunction();
+
+	BeginRender();
 }
 
 void TestRenderer(void)
@@ -77,24 +83,60 @@ void TestRenderer(void)
 	MessageBox(NULL, V("It worked!"), V("Foo!"), MB_OK);
 }
 
-void SetRenderer(const vchar* targs)
+void EngineUpdate(void)
 {
-	static void* currentRenderer = (void*)(&RenderStub);
+	UpdateConsole();
+}
+
+void InitialiseRenderFactory(void)
+{
+	static b8 initialised = false;
+	if (initialised)
+		return;
+	initialised = true;
+	engineGlobals.renderFactory = HashmapCreate();
+
+	RenderSystem* renderStubSystem = spawn(sizeof(RenderSystem));
+	renderStubSystem->RenderFunction = &RenderStub;
+
+	engineGlobals.renderSystem = renderStubSystem;
+	HashmapSet(&(engineGlobals.renderFactory), hash("stub"), &renderStubSystem);
+	RenderSystem* system = (RenderSystem*)HashmapGet(&(engineGlobals.renderFactory), hash("stub"));
+}
+
+void SetRenderer(const a8* args)
+{
+	/*static void* currentRenderer = (void*)(RenderStub);
 	void* rendererBeginPtr = (void*)(&BeginRender);
 
-	//DBUG_PTR(rendererBeginPtr);
-	for(;;)
+	if (*((u8*)(rendererBeginPtr)) == 0xE9)
 	{
-		if (*((usize*)(rendererBeginPtr)) == ((usize)(currentRenderer)))
+		((u8*)(rendererBeginPtr))++;
+		i32 difference = (*((i32*)(rendererBeginPtr)));
+		difference = ENDIAN_SWAP32(difference);
+		DBUG(V("Difference from jump to BeginRender = %d"), difference);
+	}
+
+	//usize difference = currentRenderer
+	//DBUG_PTR(rendererBeginPtr);
+	for (;;)
+	{
+		if (*((u8*)(rendererBeginPtr)) == 0xE8)
 		{
-			MessageBox(NULL, V("Found function!"), V("Alert!"), MB_OK);
-			*((usize*)(rendererBeginPtr)) = (usize)(&TestRenderer);
-			BeginRender();
+			++((u8*)(rendererBeginPtr));
+			isize difference = (isize)(rendererBeginPtr)-(isize)(currentRenderer);
+			DBUG(V("Difference from TestRenderer to RenderStub = %d"), difference);
+			//*((usize*)(rendererBeginPtr)) = (usize)(&TestRenderer);
+			//BeginRender();
 			break;
 		}
 		++((u8*)(rendererBeginPtr));
 	}
-	BeginRender();
+	BeginRender();*/
+
+	engineGlobals.isRunning = false;
+	RenderSystem* system = (RenderSystem*)HashmapGet(&(engineGlobals.renderFactory), hash("stub"));
+	engineGlobals.renderSystem = system;
 }
 
 
@@ -109,9 +151,9 @@ b8 StartEngine(const vchar* dir, const vchar* args)
 	ParseArguments(args);
 	InitInput();
 
-	SetRenderer(V("dog"));
+	SetRenderer("stub");
 
-
+	BeginRender();
 
 	return(true);
 }

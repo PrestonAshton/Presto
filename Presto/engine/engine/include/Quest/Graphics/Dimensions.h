@@ -14,7 +14,7 @@ forceinline f32 DimensionsGetAspectRatio(Dimensions dimensions)
   if (dimensions.width == 0 || dimensions.height == 0)
     return(1.0f);
 
-  return(dimensions.width / dimensions.height);
+  return ((f32)dimensions.width / (f32)dimensions.height);
 }
 
 #endif

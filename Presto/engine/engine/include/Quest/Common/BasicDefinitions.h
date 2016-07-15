@@ -13,6 +13,19 @@
 #define STEAM(x)
 #endif
 
+#define DISABLE_WARNINGS __pragma(warning(push, 0))
+#define ENABLE_WARNINGS __pragma(warning(pop))
+
+#ifdef QUEST_COMPILER_MSVC
+
+DISABLE_WARNINGS
+#include <intrin.h>
+ENABLE_WARNINGS
+
+#define ENDIAN_SWAP16(x) _byteswap_ushort(x);
+#define ENDIAN_SWAP32(x) _byteswap_ulong(x);
+#define ENDIAN_SWAP64(x) _byteswap_uint64(x);
+#endif
 
 #if defined( QUEST_EXPORTS )
 #define QUEST_EXPORT __declspec(dllexport)
@@ -35,6 +48,9 @@
 #define maybeinline inline
 #define false 0
 #define true 1
+
+#define hash(x) murmur64( x , strlen(x) )
+#define hashCustomLength(x, length) murmur64( x , length )
 
 #define LOCK_MUTEX(x) \
 	while (heapMutex == true) \
@@ -84,7 +100,16 @@ int BlankFunction(void);
 #define ZETTABYTES(x) ((EXABYTES(x) * 1024LL)
 #define YOTTABYTES(x) ((ZETTABYTES(x) * 1024LL)
 
+#define STATIC_ASSERT(COND,MSG) typedef char static_assertion_##MSG[(COND)?1:-1]
+
+#define __STATIC_MESSAGE(Message) __pragma( message( #Message ) )
+#define _STATIC_MESSAGE(Message) __STATIC_MESSAGE(Message)
+#define STATIC_MESSAGE(Message) _STATIC_MESSAGE( [Message] )
+
 #ifdef QUEST_COMPILER_MSVC
+
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+
 #pragma section(".CRT$XCU",read)
 #define INITIALIZER2_(f,p) \
         static void f(void); \
@@ -97,6 +122,9 @@ int BlankFunction(void);
 #define INITIALIZER(f) INITIALIZER2_(f,"_")
 #endif
 #else
+
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+
 #define INITIALIZER(f) \
         static void f(void) __attribute__((constructor)); \
         static void f(void)

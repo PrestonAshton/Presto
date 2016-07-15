@@ -2,7 +2,10 @@
 #define QUEST_UTILITY_CONSOLE_H
 
 #include <Quest/Graphics/Colour.h>
+
+DISABLE_WARNINGS
 #include <time.h>
+ENABLE_WARNINGS
 
 typedef enum
 {

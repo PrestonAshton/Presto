@@ -1,5 +1,7 @@
+DISABLE_WARNINGS
 #include <Windows.h>
 #include <Shlwapi.h>
+ENABLE_WARNINGS
 
 #include "win32/common.c"
 #include "win32/console.c"

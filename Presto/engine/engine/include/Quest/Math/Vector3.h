@@ -2,24 +2,31 @@
 #define QUEST_MATH_VECTOR3_H
 
 #include <Quest/Common.h>
+
+DISABLE_WARNINGS
 #include <math.h>
+ENABLE_WARNINGS
 
 typedef union
 {
   struct
   {
-    f32 x, y, z;
+    f32 x, y, z, padding;
   };
   struct
   {
-    f32 r, g, b;
+    f32 r, g, b, _padding;
   };
   struct
   {
-    f32 s, t, p;
+    f32 s, t, p, __padding;
   };
-  f32 data[3];
+  f32 data[4];
 } Vector3;
+
+// <-- Vector 3 | 128 bits | 16 bytes -->
+// Test this.
+STATIC_ASSERT(sizeof(Vector3) == 16, Size_Of_Vector3);
 
 forceinline b8 Vector3Equals(const Vector3* a, const Vector3* b)
 {
