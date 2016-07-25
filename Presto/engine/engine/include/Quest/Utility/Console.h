@@ -1,4 +1,4 @@
-#ifndef QUEST_UTILITY_CONSOLE_H
+﻿#ifndef QUEST_UTILITY_CONSOLE_H
 #define QUEST_UTILITY_CONSOLE_H
 
 #include <Quest/Graphics/Colour.h>
