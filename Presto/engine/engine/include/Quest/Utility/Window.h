@@ -10,4 +10,7 @@ i8 UpdateGLGameWindow(void);
 void OpenDX9GameWindow(void);
 i8 UpdateDX9GameWindow(void);
 
+LRESULT CALLBACK QuestWindowProc(HWND windowHandle, UINT message,
+	WPARAM wParam, LPARAM lParam);
+
 #endif

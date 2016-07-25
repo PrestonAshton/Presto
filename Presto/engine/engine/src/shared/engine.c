@@ -2,6 +2,9 @@ DISABLE_WARNINGS
 #include <stdio.h>
 ENABLE_WARNINGS
 
+#include <Quest/Modules/OpenAL.h>
+
+
 void ParseArguments(const vchar* args)
 {
 	vchar* token;
@@ -28,12 +31,13 @@ void ParseArguments(const vchar* args)
 		{
 			OpenConsole();
 			MSG(V("Console Opened!"));
-			Assert(1 == 0);
 		}
 
 		if (Vstrequal(token, V("renderer")))
 		{
-			SetRenderer(targs);
+			a8* unwidened = conjure(Vstrlen(targs) + 1);
+			Vforcechar(unwidened, targs);
+			SetRenderer(unwidened);
 		}
 
 		token = Vstrtok(NULL, V("-"));
@@ -50,32 +54,84 @@ dontinline void RenderStub()
 	WARN(V("Invalid Renderer!"));
 }
 
+void LoadSprite(void)
+{
+	MeshData data = { 0 };
+
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { -0.5f, -0.5f, 0.0f }, (Vector2) { 0.0f, 0.0f }));
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { +0.5f, -0.5f, 0.0f }, (Vector2) { 1.0f, 0.0f }));
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { +0.5f, +0.5f, 0.0f }, (Vector2) { 1.0f, 1.0f }));
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { -0.5f, +0.5f, 0.0f }, (Vector2) { 0.0f, 1.0f }));
+
+	MeshDataAddFace(&data, 0, 1, 2);
+	MeshDataAddFace(&data, 2, 3, 0);
+	MeshDataGenerateNormals(&data);
+
+	g_renderer.mesh.AddFromData(hash("sprite"), &data);
+}
+
+void LoadQuad(void)
+{
+	MeshData data = { 0 };
+
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { -1.0f, -1.0f, 0.0f }, (Vector2) { 0.0f, 0.0f }));
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { +1.0f, -1.0f, 0.0f }, (Vector2) { 1.0f, 0.0f }));
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { +1.0f, +1.0f, 0.0f }, (Vector2) { 1.0f, 1.0f }));
+	Array_VertexPushBack(&(data.vertices), CreateVertex((Vector3) { -1.0f, +1.0f, 0.0f }, (Vector2) { 0.0f, 1.0f }));
+
+	MeshDataAddFace(&data, 0, 1, 2);
+	MeshDataAddFace(&data, 2, 3, 0);
+	MeshDataGenerateNormals(&data);
+
+	g_renderer.mesh.AddFromData(hash("quad"), &data);
+}
+
+void LoadDefaultData(void)
+{
+	LoadQuad();
+	LoadSprite();
+}
+
+void LoadScene(void)
+{
+	EntityId cat = EntityWorldCreateEntity();
+	g_entityWorld.components[cat] = ComponentName;
+
+	g_entityWorld.names[cat] = (NameComponent) { "cat" };
+
+	g_renderer.texture.CreateFromFile("textures/diffuse/cat.bmp");
+	g_renderer.texture.CreateFromFile("textures/normal/default.bmp");
+
+	g_renderer.material.CreateFromData(hash("cat"), hash("textures/diffuse/cat.bmp"), hash("textures/normal/default.bmp"), (Colour32) {255, 255, 255, 255}, 80.0f);
+
+	Transform transform = TransformIdentity;
+	transform.position = (Vector3) { 0, 0, -2 };
+	NodeId catNode = SceneGraphCreate(cat, &transform);
+
+	g_renderer.renderSystem.Create(cat, hash("sprite"), hash("cat"));
+}
+
 void BeginRender(void)
 {
-	//if (engineGlobals.renderEngine == OpenGL)
-	//{
-		//OpenGLGameWindow();
+	g_renderer.Init();
+	g_soundHandler.Init();
 
-	/*engineGlobals.isRunning = true;
+	g_soundHandler.Cache("sound/ui/select.wav");
+	g_soundHandler.Cache("sound/ui/startup.wav");
+	g_soundHandler.Play(hash("sound/ui/startup.wav"));
+
+	LoadDefaultData();
+	LoadScene();
+
+	engineGlobals.isRunning = true;
 	while (engineGlobals.isRunning)
 	{
-		//if (UpdateGLGameWindow() == 0)
-		//	engineGlobals.isRunning = false;
+		if (KeyPressed(Left, Single) || KeyPressed(Right, Single))
+			g_soundHandler.Play(hash("sound/ui/select.wav"));
 
-		//GLRender();
-		//MessageBox(NULL, V("Blah!"), V("Blah!"), MB_OK);
-		//MessageBox(NULL, V("Rendering Frame..."), V("Foo!"), MB_OK);
-		RenderStub();
-
+		g_renderer.Render();
 		UpdateConsole();
-
-		//PollInputDevices();
-	//}
-	}*/
-
-	engineGlobals.renderSystem->RenderFunction();
-
-	BeginRender();
+	}
 }
 
 void TestRenderer(void)
@@ -88,57 +144,63 @@ void EngineUpdate(void)
 	UpdateConsole();
 }
 
+Renderer renderStub = { 0 };
+Renderer nullRenderer = { 0 };
+
 void InitialiseRenderFactory(void)
 {
 	static b8 initialised = false;
 	if (initialised)
 		return;
 	initialised = true;
-	engineGlobals.renderFactory = HashmapCreate();
 
-	RenderSystem* renderStubSystem = spawn(sizeof(RenderSystem));
-	renderStubSystem->RenderFunction = &RenderStub;
+	// Initialise all in NullRenderer to BlankFunction without doing stuff manually.
+	// Lazy method!
 
-	engineGlobals.renderSystem = renderStubSystem;
-	HashmapSet(&(engineGlobals.renderFactory), hash("stub"), &renderStubSystem);
-	RenderSystem* system = (RenderSystem*)HashmapGet(&(engineGlobals.renderFactory), hash("stub"));
+	usize* nullRendererPtr = &nullRenderer;
+	for (u32 i = 0; i < (sizeof(Renderer) / sizeof(usize)); i++)
+	{
+		nullRendererPtr[i] = &BlankFunction;
+	}
+
+	renderStub = nullRenderer;
+	renderStub.Render = &RenderStub;
+
+	Hashmap_RendererSetByPtr(&(g_renderers), hash("stub"), &renderStub);
+	Hashmap_RendererSetByPtr(&(g_renderers), hash("null"), &nullRenderer);
+	g_renderer = renderStub;
+}
+
+SoundHandler nullAudioHandler = { 0 };
+
+void InitialiseSoundHandlerFactory(void)
+{
+	static b8 initialised = false;
+	if (initialised)
+		return;
+	initialised = true;
+
+	usize* nullAudioHandlerPtr = &nullAudioHandler;
+	for (u32 i = 0; i < (sizeof(SoundHandler) / sizeof(usize)); i++)
+	{
+		nullAudioHandlerPtr[i] = &BlankFunction;
+	}
+
+	Hashmap_SoundHandlerSetByPtr(&(g_soundHandlers), hash("null"), &nullAudioHandler);
+	g_soundHandler = nullAudioHandler;
 }
 
 void SetRenderer(const a8* args)
 {
-	/*static void* currentRenderer = (void*)(RenderStub);
-	void* rendererBeginPtr = (void*)(&BeginRender);
-
-	if (*((u8*)(rendererBeginPtr)) == 0xE9)
-	{
-		((u8*)(rendererBeginPtr))++;
-		i32 difference = (*((i32*)(rendererBeginPtr)));
-		difference = ENDIAN_SWAP32(difference);
-		DBUG(V("Difference from jump to BeginRender = %d"), difference);
-	}
-
-	//usize difference = currentRenderer
-	//DBUG_PTR(rendererBeginPtr);
-	for (;;)
-	{
-		if (*((u8*)(rendererBeginPtr)) == 0xE8)
-		{
-			++((u8*)(rendererBeginPtr));
-			isize difference = (isize)(rendererBeginPtr)-(isize)(currentRenderer);
-			DBUG(V("Difference from TestRenderer to RenderStub = %d"), difference);
-			//*((usize*)(rendererBeginPtr)) = (usize)(&TestRenderer);
-			//BeginRender();
-			break;
-		}
-		++((u8*)(rendererBeginPtr));
-	}
-	BeginRender();*/
-
-	engineGlobals.isRunning = false;
-	RenderSystem* system = (RenderSystem*)HashmapGet(&(engineGlobals.renderFactory), hash("stub"));
-	engineGlobals.renderSystem = system;
+	g_renderer = Hashmap_RendererGetValueDefault(&g_renderers, hash(args), renderStub);
+	// sort out stuff here!
 }
 
+void SetSoundHandler(const a8* args)
+{
+	g_soundHandler = Hashmap_SoundHandlerGetValueDefault(&g_soundHandlers, hash(args), nullAudioHandler);
+	// sort out stuff here!
+}
 
 b8 StartEngine(const vchar* dir, const vchar* args)
 {
@@ -148,10 +210,11 @@ b8 StartEngine(const vchar* dir, const vchar* args)
 #ifdef QUEST_STEAM
 	SteamInit();
 #endif
+	SetSoundHandler("openal");
+	SetRenderer("opengl");
+
 	ParseArguments(args);
 	InitInput();
-
-	SetRenderer("stub");
 
 	BeginRender();
 

@@ -2,9 +2,12 @@
 
 #include "shared/glinit.c"
 #include "shared/glfuncs_generated.c"
-#include "shared/glrenderpath.c"
+#include "shared/rendersystem.c"
 #include "shared/glshaders.c"
 #include "shared/texture.c"
+#include "shared/material.c"
+#include "shared/mesh.c"
+#include "shared/geometrybuffer.c"
 
 #ifdef QUEST_SYSTEM_WINDOWS
 #include "win32/glwindow.c"

@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine\engine.vcxproj", "{9460C0E4-59C6-4E9E-A2F0-193B9E891EED}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "engine\engine.vcxproj", "{9460C0E4-59C6-4E9E-A2F0-193B9E891EED}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "launcher", "launcher\launcher.vcxproj", "{CEBD9EDC-1C18-48F8-9239-28F4A0738AEA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher", "launcher\launcher.vcxproj", "{CEBD9EDC-1C18-48F8-9239-28F4A0738AEA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9460C0E4-59C6-4E9E-A2F0-193B9E891EED} = {9460C0E4-59C6-4E9E-A2F0-193B9E891EED}
 	EndProjectSection

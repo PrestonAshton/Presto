@@ -1,4 +1,3 @@
-int BlankFunction(void)
+void BlankFunction(void)
 {
-	return 0;
 }

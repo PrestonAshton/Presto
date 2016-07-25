@@ -74,32 +74,36 @@
     <IntDir>$(SolutionDir)..\game\engine-temp-$(PlatformTarget)-$(Configuration)\</IntDir>
     <TargetName>engine</TargetName>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)..\extern\OpenAL\include</IncludePath>
+    <LibraryPath>$(SolutionDir)..\extern\OpenAL\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\game\build\bin32\</OutDir>
     <IntDir>$(SolutionDir)..\game\engine-temp-$(PlatformTarget)-$(Configuration)\</IntDir>
     <TargetName>engine</TargetName>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)..\extern\OpenAL\include</IncludePath>
+    <LibraryPath>$(SolutionDir)..\extern\OpenAL\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\game\build\bin32\</OutDir>
     <IntDir>$(SolutionDir)..\game\engine-temp-$(PlatformTarget)-$(Configuration)\</IntDir>
     <TargetName>engine</TargetName>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)..\extern\OpenAL\include</IncludePath>
+    <LibraryPath>$(SolutionDir)..\extern\OpenAL\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)..\game\build\bin64\</OutDir>
     <IntDir>$(SolutionDir)..\game\engine-temp-$(PlatformTarget)-$(Configuration)\</IntDir>
     <TargetName>engine</TargetName>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)engine\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)..\extern\OpenAL\include</IncludePath>
+    <LibraryPath>$(SolutionDir)..\extern\OpenAL\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -113,7 +117,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>false</ExceptionHandling>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PreprocessToFile>true</PreprocessToFile>
+      <PreprocessorDefinitions>QUEST_EXPORTS;_WINDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -128,10 +133,10 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>QUEST_EXPORTS;_WINDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <OmitFramePointers>false</OmitFramePointers>
@@ -143,7 +148,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>false</ExceptionHandling>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PreprocessToFile>true</PreprocessToFile>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <GenerateMapFile>true</GenerateMapFile>
@@ -156,7 +161,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -170,7 +175,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>false</ExceptionHandling>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PreprocessToFile>true</PreprocessToFile>
+      <PreprocessorDefinitions>QUEST_EXPORTS;_WINDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -184,7 +190,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -198,7 +204,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>false</ExceptionHandling>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PreprocessToFile>true</PreprocessToFile>
+      <PreprocessorDefinitions>QUEST_EXPORTS;_WINDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

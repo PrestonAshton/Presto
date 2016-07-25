@@ -17,5 +17,7 @@
 // OpenGL module
 #include "modules/opengl/UnityBuild.c"
 
+#include "modules/openal/UnityBuild.c"
+
 
 //#pragma warning(pop)

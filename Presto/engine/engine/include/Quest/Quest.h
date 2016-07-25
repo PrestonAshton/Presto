@@ -10,10 +10,15 @@
 #include <Quest/Utility.h>
 #include <Quest/Graphics.h>
 
+#include <Quest/Audio/Wave.h>
+
+#include <Quest/Easter Eggs/Diary.h>
+
 #include <Quest/UI.h>
 
 #include <Quest/Modules/OpenGL.h>
 #include <Quest/Modules/DirectX9.h>
+#include <Quest/Modules/OpenAL.h>
 
 #ifdef QUEST_STEAM
 #include <Quest/Steam.h>

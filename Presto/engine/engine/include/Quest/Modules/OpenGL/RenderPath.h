@@ -1,6 +1,0 @@
-#ifndef QUEST_GRAPHICS_GLRENDERPATH_H
-#define QUEST_GRAPHICS_GLRENDERPATH_H
-
-void GLRender(void);
-
-#endif

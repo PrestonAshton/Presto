@@ -4,13 +4,13 @@ color 07
 
 set "ourpath=%~dp0"
 set "clangpath="C:\Program Files\LLVM\bin\clang.exe""
-set "unitybuild=engine/engine/src/UnityBuild.c"
-set "unitybuildlauncher=engine/launcher/src/UnityBuild.c"
-set "includedir=engine/engine/include"
+set "unitybuild=%ourpath%/engine/engine/src/UnityBuild.c"
+set "unitybuildlauncher=%ourpath%/engine/launcher/src/UnityBuild.c"
+set "includedir=%ourpath%/engine/engine/include"
 set "warnings=-Wno-invalid-token-paste -Wno-int-conversion -Wno-microsoft-include"
 set "definitions=-D_CRT_SECURE_NO_WARNINGS -DUNICODE"
-set "tempdir=temp"
-set "outdir=game/build"
+set "tempdir=%ourpath%/temp"
+set "outdir=%ourpath%/game/build"
 
 if exist %clangpath% (
   echo Found Clang...
@@ -22,5 +22,3 @@ if exist %clangpath% (
   echo Clang is not installed on your system!
   echo http://llvm.org/releases/download.html
 )
-
-pause

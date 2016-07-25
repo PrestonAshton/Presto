@@ -1,6 +1,6 @@
 #define MsgLength 512
 
-void ForceAssert(const vchar* assertionText, const vchar* customMessage, const char* file, int lineNumber, b8* ignore)
+forceinline void ForceAssert(const vchar* assertionText, const vchar* customMessage, const char* file, int lineNumber, b8* ignore)
 {
 	vchar assertMessage[MsgLength] = V("");
 	if (customMessage != NULL)

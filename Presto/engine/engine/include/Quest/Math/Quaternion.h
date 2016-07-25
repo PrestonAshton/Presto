@@ -230,32 +230,28 @@ forceinline Quaternion* QuaternionCrossEquals(Quaternion* a, const Quaternion* b
 }
 forceinline Quaternion QuaternionNormalise(const Quaternion* a)
 {
-  return(QuaternionScale(a, 1.0f / QuaternionLength(a)));
+  return QuaternionScale(a, 1.0f / QuaternionLength(a));
 }
 forceinline Quaternion* QuaternionNormaliseEquals(Quaternion* a)
 {
-  return(QuaternionScaleEquals(a, 1.0f / QuaternionLength(a)));
+  return QuaternionScaleEquals(a, 1.0f / QuaternionLength(a));
 }
 forceinline Quaternion QuaternionConjugate(const Quaternion* a)
 {
-  Quaternion negative = QuaternionNegative(a);
-  Vector3 vector = QuaternionToVector3(&negative);
-  Quaternion returnValue;
-  returnValue.x = vector.x;
-  returnValue.y = vector.y;
-  returnValue.z = vector.z;
-  returnValue.w = a->w;
-  return(returnValue);
+	return (Quaternion) { -a->x, -a->y, -a->z, a->w };
 }
 forceinline Quaternion* QuaternionConjugateEquals(Quaternion* a)
 {
-  QuaternionToVector3Equals(QuaternionNegativeEquals(a));
-  return(a);
+	a->x = -a->x;
+	a->y = -a->y;
+	a->z = -a->z;
+
+	return a;
 }
 forceinline Quaternion QuaternionInverse(const Quaternion* a)
 {
   Quaternion conjugate = QuaternionConjugate(a);
-  return(QuaternionUnscale(&conjugate, QuaternionDot(a, a)));
+  return QuaternionUnscale(&conjugate, QuaternionDot(a, a));
 }
 forceinline Quaternion* QuaternionInverseEquals(Quaternion* a)
 {
@@ -358,8 +354,7 @@ forceinline Quaternion Matrix4ToQuaternion(const Matrix4* m)
   f32 biggestVal = sqrtf(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
   f32 mult = 0.25f / biggestVal;
 
-
-  Quaternion q;
+  Quaternion q = QuaternionIdentity;
   switch (biggestIndex)
   {
   case 0:
@@ -392,7 +387,7 @@ forceinline Quaternion Matrix4ToQuaternion(const Matrix4* m)
   } break;
   }
 
-  return(q);
+  return q;
 }
 
 forceinline Matrix4 QuaternionToMatrix4(const Quaternion* q)
@@ -425,7 +420,7 @@ forceinline Matrix4 QuaternionToMatrix4(const Quaternion* q)
   mat.data[2].data[1] = 2.0f * (yz - wx);
   mat.data[2].data[2] = 1.0f - 2.0f * (xx + yy);
 
-  return(mat);
+  return mat;
 }
 
 forceinline Quaternion QuaternionLookAt(const Vector3* eye, const Vector3* centre, const Vector3* up)
@@ -434,10 +429,10 @@ forceinline Quaternion QuaternionLookAt(const Vector3* eye, const Vector3* centr
 
   Vector3 distance = Vector3Minus(centre, eye);
   if (Vector3Length(&distance) < similar)
-    return(QuaternionIdentity);
+    return QuaternionIdentity;
 
   Matrix4 lookAt = Matrix4LookAt(eye, centre, up);
-  return(Matrix4ToQuaternion(&lookAt));
+  return Matrix4ToQuaternion(&lookAt);
 }
 
 #endif

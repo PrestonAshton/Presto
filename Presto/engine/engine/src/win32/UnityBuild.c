@@ -9,6 +9,7 @@ ENABLE_WARNINGS
 #include "win32/dx9window.c"
 #include "win32/file.c"
 #include "win32/input.c"
+#include "win32/window.c"
 
 #ifdef QUEST_STEAM
 #include "win32/steam.c"

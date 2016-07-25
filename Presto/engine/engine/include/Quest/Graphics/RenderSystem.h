@@ -1,108 +1,142 @@
 #ifndef QUEST_GRAPHICS_RENDERSYSTEM_H
 #define QUEST_GRAPHICS_RENDERSYSTEM_H
 
+#include <Quest/Common.h>
+#include <Quest/Containers.h>
+#include <Quest/Graphics/Entity.h>
+#include <Quest/Graphics/Camera.h>
+#include <Quest/Graphics/dimensions.h>
+#include <Quest/Graphics/lighting.h>
+#include <Quest/Modules/OpenGL/Texture.h>
+
 typedef u32 Instance;
 #define EmptyComponent (Instance)(-1)
 
-typedef struct
-{
-  u32 length;
-  u32 capacity;
-  void* data;
-
-  EntityId* entityId;
-  RenderComponent* component;
-} InstanceData;
+DEFINE_HASHMAP(Instance);
 
 //GeometryBuffer geometryBuffer;
 //RenderTexture lightBuffer;
 //RenderTexture outTexture;
 
-typedef struct
-{
-  InstanceData data;
-  Hashmap map;
+#define DEFINE_RENDER_SYSTEM(type, componentname, globalname)\
+\
+typedef struct\
+{\
+	u32 length;\
+	u32 capacity;\
+	void* data;\
+\
+	EntityId* entityId;\
+	componentname* component;\
+} type##InstanceData;\
+\
+typedef struct\
+{\
+	type##InstanceData data;\
+\
+	Hashmap_Instance map;\
+\
+	BaseLight ambientLight;\
+	Array_DirectionalLight directionalLights;\
+	Array_PointLight pointLights;\
+	Array_SpotLight spotLights;\
+\
+	Dimensions frameBufferSize;\
+\
+	Camera camera;\
+	f32 gamma;\
+} type;\
+\
+extern type globalname;\
+\
+forceinline void type##Allocate(u32 length)\
+{\
+	if (length <= globalname.data.length)\
+		return;\
+\
+	const usize bytes = length * (sizeof(EntityId) + sizeof(componentname));\
+\
+	type##InstanceData newData;\
+	newData.length = globalname.data.length;\
+	newData.capacity = length;\
+	newData.data = spawn(bytes);\
+\
+	newData.entityId = (EntityId*)(newData.data);\
+	newData.component = (componentname*)(newData.entityId + length);\
+\
+	copyMemory(globalname.data.entityId, newData.entityId, globalname.data.length * sizeof(EntityId));\
+	copyMemory(globalname.data.component, newData.component, globalname.data.length * sizeof( componentname ));\
+\
+	murder(globalname.data.data);\
+	globalname.data = newData;\
+}\
+\
+forceinline Instance type##CreateByPtr(EntityId id, const componentname* comp)\
+{\
+	if (globalname.data.capacity == globalname.data.length || globalname.data.capacity == 0)\
+		type##Allocate(2 * globalname.data.length + 1);\
+\
+	const Instance firstFree = globalname.data.length;\
+\
+	globalname.data.entityId[firstFree] = id;\
+	globalname.data.component[firstFree] = *comp;\
+\
+	Hashmap_InstanceSetByValue(&(globalname.map), id, firstFree);\
+\
+	globalname.data.length++;\
+\
+	return firstFree;\
+}\
+forceinline Instance type##CreateByValue(EntityId id, const componentname comp)\
+{\
+	if (globalname.data.capacity == globalname.data.length || globalname.data.capacity == 0)\
+		type##Allocate(2 * globalname.data.length + 1);\
+\
+	const Instance firstFree = globalname.data.length;\
+\
+	globalname.data.entityId[firstFree] = id;\
+	globalname.data.component[firstFree] = comp;\
+\
+	Hashmap_InstanceSetByValue(&(globalname.map), id, firstFree);\
+\
+	globalname.data.length++;\
+\
+	return firstFree;\
+}\
+forceinline void type##Destroy(Instance id)\
+{\
+	const Instance last = globalname.data.length - 1;\
+	const EntityId entity = globalname.data.entityId[id];\
+	const EntityId lastEntity = globalname.data.entityId[last];\
+\
+	globalname.data.entityId[id] = globalname.data.entityId[last];\
+	globalname.data.component[id] = globalname.data.component[last];\
+\
+	Hashmap_InstanceSetByValue(&(globalname.map), lastEntity, id);\
+	Hashmap_InstanceSetByValue(&(globalname.map), entity, EmptyComponent);\
+\
+	globalname.data.length--;\
+}\
+\
+forceinline Instance type##GetInstance(EntityId id)\
+{\
+	return Hashmap_InstanceGetValueDefault(&(globalname.map), id, EmptyComponent);\
+}\
+forceinline b8 type##IsValid(Instance instance)\
+{\
+	return instance != EmptyComponent;\
+}\
+\
+forceinline void type##Clean()\
+{\
+}\
+\
+void type##Init();\
+void type##Render()
 
-  BaseLight ambientLight;
-  Array directionalLights;
-  Array pointLights;
-  Array spotLights;
+DEFINE_RENDER_SYSTEM(NullRenderSystem, u32, g_nullRenderSystem);
 
-  Dimensions frameBufferSize;
-
-  Camera* camera;
-  SceneGraph* sceneGraph;
-  RenderContext* context;
-  f32 gamma;
-} RenderSystem;
-
-
-forcelinline void RenderSystemAllocate(RenderSystem* rendersys, u32 length)
-{
-  if (length <= rendersys->data.length)
-    return;
-
-    const usize bytes = length * (sizeof(EntityId) + sizeof(RenderComponent));
-
-    InstanceData newData;
-    newData.length = rendersys->data.length;
-    newData.capacity = length;
-    newData.data = allocator.allocate(bytes);
-
-    newData.entityId = (EntityId*)(newData.data);
-    newData.component = (RenderComponent*)(newData.entityid + length);
-
-    copyMemory(rendersys->data.entityId, newData.entityId, rendersys->data.length * sizeof(EntityId));
-    copyMemory(rendersys->data.component, newData.component, rendersys->data.length * sizeof(RenderComponent));
-
-    murder(rendersys->data.data);
-    rendersys->data = newData;
-}
-forcelinline Instance RenderSystemCreate(RenderSystem* rendersys, EntityId id, const RenderComponent& component)
-{
-  if (rendersys->data.capacity == rendersys->data.length || rendersys->data.capacity = 0)
-    RenderSystemAllocate(rendersys, 2 * rendersys->data.length + 1);
-
-    const Instance firstFree = rendersys->data.length;
-
-    rendersys->data.entityId[firstFree] = id;
-    rendersys->data.component[firstFree] = component;
-
-    HashmapSet(&(rendersys->map), id, firstFree);
-
-    rendersys->data.length++;
-
-    return(firstFree);
-}
-forcelinline void RenderSystemDestroy(RenderSystem* rendersys, Instance id)
-{
-  const Instance last = rendersys->data.length - 1;
-  const EntityId entity = rendersys->data.entityId[id];
-  const EntityId lastEntity = rendersys->data.entityId[last];
-
-  rendersys->data.entityId[id] = rendersys->data.entityId[last];
-  rendersys->data.component[id] = rendersys->data.component[last];
-
-  HashmapSet(&(rendersys->map), lastEntity, id);
-  HashmapSet(&(rendersys->map), entity, EmptyComponent);
-
-  rendersys->data.length--;
-}
-
-forcelinline Instance RenderSystemGetInstance(RenderSystem* rendersys, EntityId id)
-{
-  return(HashmapGet(&(rendersys->map), id, EmptyComponent));
-}
-forcelinline b8 RenderSystemIsValid(RenderSystem* rendersys, Instance instance)
-{
-  return(instance != EmptyComponent);
-}
-
-forcelinline void RenderSystemClean(RenderSystem* rendersys)
-{
-  // Reserved
-}
-
-extern RenderSystem renderSystem;
+BLANK_FUNCTION(void NullRenderSystemInit)
+BLANK_FUNCTION(void NullRenderSystemRender)
 
 #endif

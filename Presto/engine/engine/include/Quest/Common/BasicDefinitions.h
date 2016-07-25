@@ -27,6 +27,8 @@ ENABLE_WARNINGS
 #define ENDIAN_SWAP64(x) _byteswap_uint64(x);
 #endif
 
+#define BLANK_FUNCTION(x) x() {}
+
 #if defined( QUEST_EXPORTS )
 #define QUEST_EXPORT __declspec(dllexport)
 #else
@@ -60,7 +62,7 @@ ENABLE_WARNINGS
 #define UNLOCK_MUTEX(x) \
 	heapMutex = false
 
-int BlankFunction(void);
+void BlankFunction(void);
 
 #define FULFIL_INTERFACE_FUNCTION(name, returnType, ...) \
 	__declspec(dllexport) returnType name##( ##__VA_ARGS__## )

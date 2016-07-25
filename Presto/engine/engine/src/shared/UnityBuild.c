@@ -2,5 +2,7 @@
 #include "shared/common.c"
 #include "shared/engine.c"
 #include "shared/memory.c"
+#include "shared/mesh.c"
 #include "shared/image.c"
-//#include "shared/rendersystem.c"
+#include "shared/entityworld.c"
+#include "shared/scenegraph.c"

@@ -2,8 +2,10 @@
 #define QUEST_MODULES_OPENGL_SHARED_TEXTURE_H
 
 #include <Quest/Common.h>
+#include <Quest/Graphics/Colour.h>
+#include <Quest/Modules/OpenGL/Mesh.h>
 
-enum TextureFilter
+/*enum TextureFilter
 {
 	Linear,
 	Nearest,
@@ -16,21 +18,28 @@ enum TextureWrapMode
 	ClampToEdge,
 	ClampToBorder,
 	MirroredRepeat
-};
+};*/
 
 typedef struct
 {
 	u16 object;
-	u16 width;
-	u16 height;
-	u16 padding;
-} Texture;
+} GLTexture;
 
 // <-- Texture | 64 bits | 8 bytes -->
 // Test this.
-STATIC_ASSERT(sizeof(Texture) == 8, Size_Of_Texture);
+STATIC_ASSERT(sizeof(GLTexture) == 2, Size_Of_GLTexture);
 
-forceinline void BindTexture(Texture texture, u8 position)
+DEFINE_HASHMAP(GLTexture);
+
+Hashmap_GLTexture g_glTextures = { 0 };
+
+GLTexture GLTextureLoadFromFile(const a8* path);
+GLTexture GLTextureLoadFromImage(Image image);
+
+void GLTextureAddFromFile(const a8* path);
+void GLTextureAddFromData(u64 name, Image image);
+
+forceinline void GLTextureBindTexture(GLTexture texture, u8 position)
 {
 	if (position > 31)
 		position = 31;
@@ -42,6 +51,5 @@ forceinline void BindTexture(Texture texture, u8 position)
 	glBindTexture(GL_TEXTURE_2D, texture.object);
 	glDisable(GL_TEXTURE_2D);
 }
-
 
 #endif

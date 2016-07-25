@@ -21,7 +21,7 @@ Matrix4 CameraProjection(const Camera* camera)
 				camera->orthographicScale,
 				-distance,
 				distance
-				));
+			));
 	}
 	else if (camera->projectionType == InfinitePerspective)
 	{
@@ -60,8 +60,8 @@ Matrix4 view(const Camera& camera)
   Matrix4 view = Matrix4Identity;
 
   view = scale(Vector3{ 1, 1, 1 } / camera.transform.scale) *
-    quaternionToMatrix4(conjugate(&camera.transform.orientation)) *
-    translate(-camera.transform.position);
+	quaternionToMatrix4(conjugate(&camera.transform.orientation)) *
+	translate(-camera.transform.position);
 
   return view;
 }
@@ -69,18 +69,29 @@ Matrix4 view(const Camera& camera)
 
 Matrix4 CameraView(const Camera* camera)
 {
-  Vector3 numerator = (Vector3){1.0f, 1.0f, 1.0f};
-  Vector3 scaleReciprocal = Vector3Divide(&numerator, &camera->transform.scale);
-  // is used as return value below also
-  Matrix4 scaleMatrix = Matrix4Scale(&scaleReciprocal);
-  Quaternion orientationConjugate = QuaternionConjugate(&camera->transform.orientation);
-  Matrix4 conjugateMatrix = QuaternionToMatrix4(&orientationConjugate);
-  Vector3 negativePosition = Vector3Negative(&camera->transform.position);
-  Matrix4 negativeTranslationMatrix = Matrix4Translate(&negativePosition);
+	// return Math::scale(Vector3{1, 1, 1} / c.transform.scale) * quaternionToMatrix4(conjugate(c.transform.orientation)) * Math::translate(-c.transform.position);
 
-  // scale
-  Matrix4HadamardEquals(&scaleMatrix, &conjugateMatrix);
-  Matrix4HadamardEquals(&scaleMatrix, &negativeTranslationMatrix);
+	// Math::scale(Vector3{1, 1, 1} / c.transform.scale)
+	Vector3 numerator = { 1.0f, 1.0f, 1.0f };
+	Vector3 scaleReciprocal = Vector3Divide(&numerator, &camera->transform.scale);
+	Matrix4 scaledReciprocatedScale = Matrix4Scale(&scaleReciprocal);
+	// ^^ product
 
-  return(scaleMatrix);
+	// quaternionToMatrix4(conjugate(c.transform.orientation))
+	Quaternion orientationConjugate = QuaternionConjugate(&camera->transform.orientation);
+	Matrix4 orientationConjugateMatrix = QuaternionToMatrix4(&orientationConjugate);
+	// ^^ product
+
+	// Math::translate(-c.transform.position);
+	Vector3 negativePosition = Vector3Negative(&camera->transform.position);
+	Matrix4 negativeTranslationMatrix = Matrix4Translate(&negativePosition);
+	// ^^ product
+
+	// scaledReciprocatedScale is resultant.
+	// Math::scale(Vector3{1, 1, 1} / c.transform.scale) * quaternionToMatrix4(conjugate(c.transform.orientation)) * Math::translate(-c.transform.position);
+
+	Matrix4HadamardEquals(&scaledReciprocatedScale, &orientationConjugateMatrix);
+	Matrix4HadamardEquals(&scaledReciprocatedScale, &negativeTranslationMatrix);
+
+	return scaledReciprocatedScale;
 }

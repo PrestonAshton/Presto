@@ -66,6 +66,8 @@ typedef u16 vchar;
 #endif
 #define _V(string) L ## string
 #define V(string) _V(string)
+#define Vforcechar(x, y) wcstombs(x, y, Vstrlen(y))
+#define Vforcevcharfromchar(x, y) mbstowcs(x, y, strlen(y))
 #define Vsprintfu swprintf
 #define Vprintf wprintf
 #define Vsprintf swprintf_s
@@ -80,10 +82,13 @@ typedef u16 vchar;
 #define Vvsprintf vswprintf
 #define Vstrftime wcsftime
 #define Vstrcopy wcsncpy
+#define Vfgets fgetws
 //#define Vstrsep wcstok_r
 #else
 typedef u8 vchar;
 #define V(string) string
+#define Vforcechar(x, y) y = x
+#define Vforcevcharfromchar(x, y) y = x
 #define Vsprintfu sprintf
 #define Vprintf printf
 #define Vsprintf sprintf_s
@@ -99,12 +104,13 @@ typedef u8 vchar;
 #define Vvsprintf vsprintf
 #define Vstrftime strftime
 #define Vstrcopy strncpy
+#define Vfgets fgets
 #endif
 
 #define Vconstcopy(x) \
   usize strSize = (Vstrlen( x ) + 1) * sizeof(vchar); \
   vchar* x##Owned = (vchar*) conjure(strSize); \
-  copyMemory( args, x##Owned, strSize);
+  copyMemory( x, x##Owned, strSize);
 
 
 forceinline usize Vstrlen(const vchar* a)

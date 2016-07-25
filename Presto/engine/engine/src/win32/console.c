@@ -1,11 +1,10 @@
-DISABLE_WARNINGS
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
 #include <windows.h>
 #include <stdarg.h>
 #include <wchar.h>
-ENABLE_WARNINGS
+
 
 HANDLE handle_out;
 HANDLE handle_in;
@@ -17,13 +16,13 @@ void OpenConsole(void)
 	AllocConsole();
 
 	handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
-	int hCrt = _open_osfhandle(((intptr_t)(handle_out)), _O_TEXT);
+	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
 	FILE* hf_out = _fdopen(hCrt, "w");
 	setvbuf(hf_out, NULL, _IONBF, 1);
 	*stdout = *hf_out;
 
 	handle_in = GetStdHandle(STD_INPUT_HANDLE);
-	hCrt = _open_osfhandle(((intptr_t)(handle_out)), _O_TEXT);
+	hCrt = _open_osfhandle((long)handle_in, _O_TEXT);
 	FILE* hf_in = _fdopen(hCrt, "r");
 	setvbuf(hf_in, NULL, _IONBF, 128);
 	*stdin = *hf_in;
@@ -53,6 +52,8 @@ void WriteToConsole(ConsoleColour colour, const vchar* fmt, ...)
 
 void UpdateConsole(void)
 {
+	if (KeyPressed(GraveAccent, Single))
+		OpenConsole();
 }
 
 void WriteLineToConsole(ConsoleColour colour, const vchar* fmt, ...)
@@ -69,4 +70,3 @@ void WriteLineToConsole(ConsoleColour colour, const vchar* fmt, ...)
 	WriteToConsole(colour, fmt, args);
 	va_end(args);
 }
-

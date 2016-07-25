@@ -21,12 +21,14 @@ typedef union
   {
     f32 s, t, p, __padding;
   };
-  f32 data[4];
+  f32 data[3];
 } Vector3;
 
 // <-- Vector 3 | 128 bits | 16 bytes -->
 // Test this.
 STATIC_ASSERT(sizeof(Vector3) == 16, Size_Of_Vector3);
+
+Vector3 Vector3Zero = { 0 };
 
 forceinline b8 Vector3Equals(const Vector3* a, const Vector3* b)
 {

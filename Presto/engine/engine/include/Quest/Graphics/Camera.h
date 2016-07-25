@@ -23,6 +23,8 @@ typedef struct
 	Transform transform;
 } Camera;
 
+Vector3 g_straightUp =  { 0.0f, 1.0f, 0.0f };
+
 forceinline void CameraLookAtEquals(Camera* camera, const Vector3* position, const Vector3* up)
 {
 	Quaternion rotatedQuaternion = QuaternionLookAt(&camera->transform.position, position, up);
@@ -73,7 +75,7 @@ forceinline Matrix4 CameraMatrix(const Camera* camera)
 	Matrix4 cameraProjection = CameraProjection(camera);
 	Matrix4 cameraView = CameraView(camera);
 	Matrix4HadamardEquals(&cameraProjection, &cameraView);
-	return(cameraProjection);
+	return cameraProjection;
 }
 
 #endif

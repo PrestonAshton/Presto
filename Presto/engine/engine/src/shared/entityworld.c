@@ -1,0 +1,1 @@
+EntityWorld g_entityWorld;

@@ -35,7 +35,7 @@ typedef struct
 // Test this.
 STATIC_ASSERT(sizeof(Image) == 16, Size_Of_Image);
 
-Image ImageLoadFromFile(const vchar* filename);
+Image ImageLoadFromFile(const a8* filename);
 
 forceinline Colour24* ImageGetPixel(Image* image, u16 x, u16 y)
 {

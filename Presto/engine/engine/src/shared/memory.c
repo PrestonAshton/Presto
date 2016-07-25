@@ -4,7 +4,7 @@ b8 heapMutex = false;
 
 void* heapAllocate(vol size, vol alignment)
 {
-	LOCK_MUTEX(heapMutex);
+	//LOCK_MUTEX(heapMutex);
 	const vol total = size + alignment + sizeof(MemoryHeader);
 	MemoryHeader* header = (MemoryHeader*)malloc(total);
 	header->size = total;
@@ -19,7 +19,7 @@ void* heapAllocate(vol size, vol alignment)
 	totalHeapAllocatedSpace += total;
 	totalheapAllocationCount++;
 
-	UNLOCK_MUTEX(heapMutex);
+	//UNLOCK_MUTEX(heapMutex);
 	return(ptr);
 }
 
@@ -39,13 +39,13 @@ void heapDeallocate(void* pointer)
 	if (pointer == NULL)
 		return;
 
-	LOCK_MUTEX(heapMutex);
+	//LOCK_MUTEX(heapMutex);
 	MemoryHeader* head = getHeader(pointer);
 	totalHeapAllocatedSpace -= head->size;
 	totalheapAllocationCount--;
 
 	free(head);
-	UNLOCK_MUTEX(heapMutex);
+	//UNLOCK_MUTEX(heapMutex);
 }
 vol heapAllocatedSize(void* pointer)
 {

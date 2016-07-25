@@ -4,7 +4,7 @@
 #include <Quest/Common/BasicDefinitions.h>
 #include <Quest/Common/Types.h>
 
-void ForceAssert(const vchar* assertionText, const vchar* customMessage, const char* file, int lineNumber, b8* ignore);
+forceinline void ForceAssert(const vchar* assertionText, const vchar* customMessage, const char* file, int lineNumber, b8* ignore);
 
 #ifdef _DEBUG
 

@@ -1,4 +1,4 @@
-Image LoadBMP(const vchar* path)
+Image LoadBMP(const a8* path)
 {
 	Image image = { 0 };
 
@@ -8,7 +8,7 @@ Image LoadBMP(const vchar* path)
 
 	u8* fileData = ReadEntireFile(path);
 	copyMemory(fileData, header, 54);
-	
+
 	dataPos = *(u32*)&(header[0x0A]);
 	imageSize = *(u32*)&(header[0x22]);
 	image.width = *(u32*)&(header[0x12]);
@@ -32,13 +32,13 @@ Image LoadBMP(const vchar* path)
 		image.pixels[i] = image.pixels[i + 2];
 		image.pixels[i + 2] = tempRGB;
 	}
-	
+
 	ImageFlipVertically(&image);
 
 	return image;
 }
 
-Image ImageLoadFromFile(const vchar* path)
+Image ImageLoadFromFile(const a8* path)
 {
 	// Multiple types in future.
 	// Our own file type! :o

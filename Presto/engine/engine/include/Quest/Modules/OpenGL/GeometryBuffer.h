@@ -2,17 +2,16 @@
 #define QUEST_MODULES_OPENGL_SHARED_GEOMETRYBUFFER_H
 
 #include <Quest/Common.h>
+#include <Quest/Modules/OpenGL/GeometryBuffer.h>
+#include <Quest/Modules/OpenGL/Texture.h>
 
 typedef struct
 {
-	// Not using normal textures here for size efficiency.
-	// This is more efficient in both performance and size in this case.
+	GLTexture diffuse;
+	GLTexture specular;
+	GLTexture normal;
+	GLTexture depth;
 
-	u16 diffuse;
-	u16 specular;
-	u16 normal;
-	u16 depth;
-	
 	// u16 emission;
 	// Note: Replace padding with this when the time comes!
 
@@ -25,11 +24,26 @@ typedef struct
 
 	// <-- 64 bits | 8 bytes -->
 
-} GeometryBuffer;
+} GLGeometryBuffer;
 
 // <-- Geometry Buffer | 128 bits | 16 bytes -->
 // Test this.
-STATIC_ASSERT(sizeof(GeometryBuffer) == 16, Size_Of_GeometryBuffer);
+STATIC_ASSERT(sizeof(GLGeometryBuffer) == 16, Size_Of_GLGeometryBuffer);
+
+extern GLGeometryBuffer g_glGeometryBuffer;
+
+void GLGeometryBufferCreate(u16 width, u16 height);
+
+forceinline void GLGeometryBufferBind()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, &(g_glGeometryBuffer.fbo));
+}
+
+forceinline void GLGeometryBufferUnbind()
+{
+	glFlush();
+	glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+}
 
 
 #endif
