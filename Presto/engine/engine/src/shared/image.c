@@ -23,7 +23,7 @@ Image LoadBMP(const a8* path)
 
 	image.pixels = spawn(imageSize);
 
-	copyMemory(fileData, image.pixels, imageSize);
+	copyMemory(fileData + dataPos, image.pixels, imageSize);
 
 	u8 tempRGB = 0;
 	for (u32 i = 0; i < imageSize; i += RGB)
@@ -34,6 +34,8 @@ Image LoadBMP(const a8* path)
 	}
 
 	ImageFlipVertically(&image);
+
+	murder(fileData);
 
 	return image;
 }

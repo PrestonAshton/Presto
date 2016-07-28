@@ -18,7 +18,7 @@ enum UsedShaders
 void GLCreateShader(const a8* vertexPath, const a8* fragmentPath, u8 shaderId);
 void GLRegisterUniform(u8 uniformPosition, u8 shaderId, const a8* name);
 
-u8 g_glShaderObjects[GLTotalShaders] = { 0 };
+u32 g_glShaderObjects[GLTotalShaders] = { 0 };
 
 // u_camera
 // u_cameraPosition
@@ -89,7 +89,7 @@ enum GLUniformPositions
 };
 
 
-u8 g_glUniformPositions[GLTotalShaders * TotalUniforms] = { 0 };
+u32 g_glUniformPositions[GLTotalShaders * TotalUniforms] = { 0 };
 
 #define GET_UNIFORM(shader, uniformname) g_glUniformPositions[ ((shader + 1) * TotalUniforms) - uniformname - 1]
 

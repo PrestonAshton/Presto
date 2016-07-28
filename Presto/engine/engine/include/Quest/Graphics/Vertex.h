@@ -9,12 +9,11 @@
 
 typedef struct
 {
-	Vector3 position; // 128
-	Vector3 normal; // 128
-	Vector3 tangent; // 128
-	Vector2 texCoord; // 64
-	Colour32 colour; // 32
-	u32 padding;
+	Vector3 position;
+	Vector3 normal;
+	Vector3 tangent;
+	Vector2 texCoord;
+	Colour32 colour;
 } Vertex;
 
 DEFINE_ARRAY(Vertex);

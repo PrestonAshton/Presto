@@ -1,6 +1,6 @@
-GLGeometryBuffer g_glGeometryBuffer;
+GLGeometryBuffer g_glGeometryBuffer = { 0 };
 
-forceinline GLAddRenderTarget(u32* drawBuffers, u16 width, u16 height, u16* object, u32 attachment, i32 internalFormat, u32 format, u32 type)
+forceinline GLAddRenderTarget(u16 width, u16 height, u32* object, u32 attachment, i32 internalFormat, u32 format, u32 type)
 {
 	if (!*object)
 		glGenTextures(1, object);
@@ -35,16 +35,22 @@ void GLGeometryBufferCreate(u16 width, u16 height)
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, g_glGeometryBuffer.width, g_glGeometryBuffer.height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 
-	u32 drawBuffers[2];
+	u32 drawBuffers[3];
 
-	GLAddRenderTarget(&drawBuffers, width, height, &(g_glGeometryBuffer.diffuse), GL_COLOR_ATTACHMENT0, GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.diffuse), GL_COLOR_ATTACHMENT0, GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
 	drawBuffers[0] = GL_COLOR_ATTACHMENT0;
-	GLAddRenderTarget(&drawBuffers, width, height, &(g_glGeometryBuffer.specular), GL_COLOR_ATTACHMENT1, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.specular), GL_COLOR_ATTACHMENT1, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
 	drawBuffers[1] = GL_COLOR_ATTACHMENT1;
-	GLAddRenderTarget(&drawBuffers, width, height, &(g_glGeometryBuffer.normal), GL_COLOR_ATTACHMENT2, GL_RGB10_A2, GL_RGBA, GL_FLOAT);
-	GLAddRenderTarget(&drawBuffers, width, height, &(g_glGeometryBuffer.depth), GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT);
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.normal), GL_COLOR_ATTACHMENT2, GL_RGB10_A2, GL_RGBA, GL_FLOAT);
+	drawBuffers[2] = GL_COLOR_ATTACHMENT2;
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.depth), GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT);
 
-	glDrawBuffers(2, &drawBuffers[0]);
+	glDrawBuffers(3, &drawBuffers[0]);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		FAIL("Framebuffer incomplete!");
+	}
 }

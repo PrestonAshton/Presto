@@ -62,6 +62,7 @@ WinMain(HINSTANCE instance,
 			}
 
 			startEngine(exePath, commandLine);
+			return 1; 
 		}
 
 		token = Vstrtok(NULL, V("-"));
@@ -84,7 +85,5 @@ WinMain(HINSTANCE instance,
 		WaitForSingleObject(pInfo.hProcess, INFINITE);
 		CloseHandle(pInfo.hThread);
 		CloseHandle(pInfo.hProcess);
-		DWORD exitCode = -1;
-		GetExitCodeProcess(pInfo.hProcess, &exitCode);
 	}
 }

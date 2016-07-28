@@ -105,7 +105,7 @@ void LoadScene(void)
 	g_renderer.material.CreateFromData(hash("cat"), hash("textures/diffuse/cat.bmp"), hash("textures/normal/default.bmp"), (Colour32) {255, 255, 255, 255}, 80.0f);
 
 	Transform transform = TransformIdentity;
-	transform.position = (Vector3) { 0, 0, -2 };
+	transform.position = (Vector3) { 0, 0, 0 };
 	NodeId catNode = SceneGraphCreate(cat, &transform);
 
 	g_renderer.renderSystem.Create(cat, hash("sprite"), hash("cat"));
@@ -123,20 +123,30 @@ void BeginRender(void)
 	LoadDefaultData();
 	LoadScene();
 
+	TickCounter tc = TickCounterCreate();
+	Time prevTime = TimeNow();
+
 	engineGlobals.isRunning = true;
 	while (engineGlobals.isRunning)
 	{
+		Time currentTime = TimeNow();
+		Time deltaTime = TimeFromMicroseconds(currentTime.microseconds - prevTime.microseconds);
+		prevTime = currentTime;
+
 		if (KeyPressed(Left, Single) || KeyPressed(Right, Single))
 			g_soundHandler.Play(hash("sound/ui/select.wav"));
+
+		if (KeyPressed(EscapeKey, Single))
+			engineGlobals.isRunning = false;
+
+		if (TickCounterUpdate(&tc, TimeFromMilliseconds(500)))
+		{
+			printf("Your FPS is: %f\n", tc.tickRate);
+		}
 
 		g_renderer.Render();
 		UpdateConsole();
 	}
-}
-
-void TestRenderer(void)
-{
-	MessageBox(NULL, V("It worked!"), V("Foo!"), MB_OK);
 }
 
 void EngineUpdate(void)
@@ -202,8 +212,10 @@ void SetSoundHandler(const a8* args)
 	// sort out stuff here!
 }
 
-b8 StartEngine(const vchar* dir, const vchar* args)
+void StartEngine(const vchar* dir, const vchar* args)
 {
+	OpenEngineLock();
+
 	const usize dirSize = sizeof(vchar) * (Vstrlen(dir) + 1);
 	engineGlobals.exePath = spawn(dirSize);
 	copyMemory(dir, engineGlobals.exePath, dirSize);
@@ -218,7 +230,8 @@ b8 StartEngine(const vchar* dir, const vchar* args)
 
 	BeginRender();
 
-	return(true);
+	CloseEngineLock();	
+	return 1;
 }
 
 EngineGlobals engineGlobals = { 0 };

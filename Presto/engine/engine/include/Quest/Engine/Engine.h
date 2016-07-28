@@ -73,7 +73,7 @@ EngineGlobals engineGlobals;
 #endif
 
 DEFINE_EXTERNAL_INTERFACE_FUNCTION(ClientUpdate, void, void);
-DEFINE_INTERFACE_FUNCTION(StartEngine, b8, const vchar*, const vchar*);
+DEFINE_INTERFACE_FUNCTION(StartEngine, void, const vchar*, const vchar*);
 
 void RenderStub(void);
 

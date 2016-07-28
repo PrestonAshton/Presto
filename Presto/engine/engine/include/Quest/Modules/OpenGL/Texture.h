@@ -22,12 +22,8 @@ enum TextureWrapMode
 
 typedef struct
 {
-	u16 object;
+	u32 object;
 } GLTexture;
-
-// <-- Texture | 64 bits | 8 bytes -->
-// Test this.
-STATIC_ASSERT(sizeof(GLTexture) == 2, Size_Of_GLTexture);
 
 DEFINE_HASHMAP(GLTexture);
 

@@ -94,13 +94,13 @@ void BlankFunction(void);
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 #define KILOBYTES(x) ((x) * 1024LL)
-#define MEGABYTES(x) ((KILOBYTES(x) * 1024LL)
-#define GIGABYTES(x) ((MEGABYTES(x) * 1024LL)
-#define TERABYTES(x) ((GIGABYTES(x) * 1024LL)
-#define PETABYTES(x) ((TERABYTES(x) * 1024LL)
-#define EXABYTES(x) ((PETABYTES(x) * 1024LL)
-#define ZETTABYTES(x) ((EXABYTES(x) * 1024LL)
-#define YOTTABYTES(x) ((ZETTABYTES(x) * 1024LL)
+#define MEGABYTES(x) ((KILOBYTES(x)) * 1024LL)
+#define GIGABYTES(x) ((MEGABYTES(x)) * 1024LL)
+#define TERABYTES(x) ((GIGABYTES(x)) * 1024LL)
+#define PETABYTES(x) ((TERABYTES(x)) * 1024LL)
+#define EXABYTES(x) ((PETABYTES(x)) * 1024LL)
+#define ZETTABYTES(x) ((EXABYTES(x)) * 1024LL)
+#define YOTTABYTES(x) ((ZETTABYTES(x)) * 1024LL)
 
 #define STATIC_ASSERT(COND,MSG) typedef char static_assertion_##MSG[(COND)?1:-1]
 

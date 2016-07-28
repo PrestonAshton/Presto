@@ -12,23 +12,10 @@ typedef struct
 	GLTexture normal;
 	GLTexture depth;
 
-	// u16 emission;
-	// Note: Replace padding with this when the time comes!
-
-	// <-- 64 bits | 8 bytes -->
-
-	u16 width;
-	u16 height;
-	u16 fbo;
-	u16 padding;
-
-	// <-- 64 bits | 8 bytes -->
-
+	u32 width;
+	u32 height;
+	u32 fbo;
 } GLGeometryBuffer;
-
-// <-- Geometry Buffer | 128 bits | 16 bytes -->
-// Test this.
-STATIC_ASSERT(sizeof(GLGeometryBuffer) == 16, Size_Of_GLGeometryBuffer);
 
 extern GLGeometryBuffer g_glGeometryBuffer;
 
@@ -36,7 +23,7 @@ void GLGeometryBufferCreate(u16 width, u16 height);
 
 forceinline void GLGeometryBufferBind()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, &(g_glGeometryBuffer.fbo));
+	glBindFramebuffer(GL_FRAMEBUFFER, g_glGeometryBuffer.fbo);
 }
 
 forceinline void GLGeometryBufferUnbind()

@@ -19,7 +19,6 @@ void GLRenderSystemGeometryPass(void)
 	GLGeometryBufferCreate(1280, 720);
 
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_DEPTH_TEST);
 
 	GLGeometryBufferBind(&g_glGeometryBuffer);
 	{
@@ -76,12 +75,12 @@ void GLRenderSystemOutPass(void)
 
 void GLRenderSystemOutput(void)
 {
-	glClearColor(1, 1, 1, 1);
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(g_glShaderObjects[GLTargetPassThru]);
 	glUniform1i(GET_UNIFORM(GLTargetPassThru, u_tex), 0);
-	GLRenderSystemSetTexture(g_glGeometryBuffer.diffuse, 0);
+	GLRenderSystemSetTexture(g_glGeometryBuffer.depth, 0);
+	//GLTexture testCat = Hashmap_GLTextureGetValue(&g_glTextures, hash("textures/diffuse/cat.bmp"));
+	//GLRenderSystemSetTexture(testCat, 0);
 
 	// OPTIMISE ME AND GET QUAD PROPERLY!
 
@@ -94,10 +93,10 @@ void GLRenderSystemInit(void)
 {
 	OpenGLGameWindow();
 
-	/*glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);*/
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
 
 	glClearColor(0, 0, 0, 1);
 
@@ -140,7 +139,7 @@ void GLRenderSystemInit(void)
 	g_glRenderSystem.camera.transform = TransformIdentity;
 	g_glRenderSystem.camera.viewportAspectRatio = 1280.0f / 720.0f;
 	Vector3 position = { 0.0f, 0.0f, -2.0f };
-	//CameraLookAtEquals(&g_glRenderSystem.camera, &position, &g_straightUp);
+	CameraLookAtEquals(&g_glRenderSystem.camera, &position, &g_straightUp);
 }
 
 // clear colour test

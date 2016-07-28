@@ -99,7 +99,7 @@ forceinline Matrix4* Matrix4HadamardEquals(Matrix4* a, const Matrix4* b)
 	for (usize i = 0; i < 4; i++)
 		Vector4MultiplyEquals(&a->data[i], &b->data[i]);
 
-	return(a);
+	return a;
 }
 
 forceinline Matrix4 Matrix4Rotate(const Radian angle, const Vector3* v)

@@ -7,9 +7,9 @@
 
 typedef struct
 {
-	u16 vbo;
-	u16 ibo;
-	i32 drawCount;
+	u32 vbo;
+	u32 ibo;
+	u64 drawCount;
 } GLMesh;
 
 DEFINE_HASHMAP(GLMesh);

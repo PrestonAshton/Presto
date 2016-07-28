@@ -20,7 +20,7 @@ u32 StrAppendStr(String* string, const String* otherString);
 a8* StrBegin(String* string);
 a8* StrEnd(String* string);
 
-const a8* StrCStr(String* string);
+const a8* StrCStr(const String* string);
 
 void StrClear(String* string);
 void StrTrim(String* string);
@@ -62,7 +62,7 @@ u32 StrAppendChar(String* string, a8 character)
 }
 u32 StrAppendCStr(String* string, const a8* charArray)
 {
-	return Array_a8Append(&(string->data), charArray, strlen(charArray));
+	return Array_a8Append(&(string->data), charArray, (u32)(strlen(charArray)));
 }
 u32 StrAppendStr(String* string, const String* otherString)
 {

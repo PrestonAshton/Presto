@@ -169,7 +169,7 @@ forceinline Vector4* Vector4MultiplyEquals(Vector4* a, const Vector4* b)
   a->z = a->z * b->z;
   a->w = a->w * b->w;
 
-  return(a);
+  return a;
 }
 
 forceinline Vector4 Vector4Divide(const Vector4* a, const Vector4* b)

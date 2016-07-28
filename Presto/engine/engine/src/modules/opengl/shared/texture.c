@@ -1,4 +1,4 @@
-forceinline u8 GLTextureGetInternalFormat(ImageFormat format, b8 srgb)
+forceinline u8 GLTextureGetInternalFormat(u8 format, b8 srgb)
 {
 	switch (format)
 	{
@@ -7,9 +7,19 @@ forceinline u8 GLTextureGetInternalFormat(ImageFormat format, b8 srgb)
 		case GreyscaleAlpha:
 			return GL_LUMINANCE;*/
 	case RGB:
-		return (srgb ? GL_SRGB : GL_RGB);
+	{
+		if (srgb)
+			return GL_SRGB;
+		else
+			return GL_RGB;
+	}	break;
 	case RGBA:
-		return (srgb ? GL_SRGB_ALPHA : GL_RGBA);
+	{
+		if (srgb)
+			return GL_SRGB_ALPHA;
+		else
+			return GL_RGBA;
+	} break;
 	}
 
 	return 0;

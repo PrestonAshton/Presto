@@ -11,30 +11,26 @@ typedef union
 {
   struct
   {
-    f32 x, y, z, padding;
+    f32 x, y, z;
   };
   struct
   {
-    f32 r, g, b, _padding;
+    f32 r, g, b;
   };
   struct
   {
-    f32 s, t, p, __padding;
+    f32 s, t, p;
   };
   f32 data[3];
 } Vector3;
-
-// <-- Vector 3 | 128 bits | 16 bytes -->
-// Test this.
-STATIC_ASSERT(sizeof(Vector3) == 16, Size_Of_Vector3);
 
 Vector3 Vector3Zero = { 0 };
 
 forceinline b8 Vector3Equals(const Vector3* a, const Vector3* b)
 {
   if (a->x == b->x && a->y == b->y && a->z == b->z)
-    return(1);
-  return(0);
+    return 1;
+  return 0;
 }
 
 forceinline Vector3 Vector3Negative(const Vector3* a)

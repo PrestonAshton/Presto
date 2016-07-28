@@ -130,15 +130,9 @@ void OpenGLGameWindow() {
 
 i8 UpdateGLGameWindow(void) {
 	MSG message;
-	if (GetMessage(&message, NULL, NULL, NULL) > 0) {
+	if (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
+	{
 		TranslateMessage(&message);
 		DispatchMessage(&message);
-
-		SwapBuffers(deviceContext);
-
-		return (1);
-	}
-	else {
-		return (0);
 	}
 }
