@@ -3,6 +3,7 @@
 
 extern PROC(*DwglGetProcAddress)(LPCSTR name);
 
+#include <Quest/Modules/OpenGL/Debug.h>
 #include <Quest/Modules/OpenGL/Functions.h>
 #include <Quest/Modules/OpenGL/RenderSystem.h>
 #include <Quest/Modules/OpenGL/Mesh.h>

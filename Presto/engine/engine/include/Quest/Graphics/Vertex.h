@@ -10,10 +10,10 @@
 typedef struct
 {
 	Vector3 position;
-	Vector3 normal;
-	Vector3 tangent;
 	Vector2 texCoord;
 	Colour32 colour;
+	Vector3 normal;
+	Vector3 tangent;
 } Vertex;
 
 DEFINE_ARRAY(Vertex);

@@ -10,9 +10,9 @@ typedef enum
 	TexCoord = 1,
 	Colour = 2,
 	Normal = 3,
-	Tangent = 4
+	Tangent = 4,
+	TotalAtrributes,
 } AttribLocation;
-
 
 typedef struct
 {

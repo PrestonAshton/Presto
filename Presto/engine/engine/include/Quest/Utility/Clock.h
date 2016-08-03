@@ -11,7 +11,7 @@ typedef struct
 
 forceinline Clock ClockCreate(void)
 {
-	return (Clock){ TimeNow() };
+	return (Clock) { TimeNow() };
 }
 
 forceinline Time ClockGetElapsedTime(Clock clock)
@@ -22,7 +22,6 @@ forceinline Time ClockGetElapsedTime(Clock clock)
 forceinline Clock ClockRestartNewClock(Clock clock)
 {
 	Time now = TimeNow();
-	Time elapsed = TimeFromMicroseconds(now.microseconds - clock.startTime.microseconds);
 	clock.startTime = now;
 
 	return clock;

@@ -14,7 +14,7 @@ typedef struct
 
 	u32 width;
 	u32 height;
-	u32 fbo;
+	GLuint fbo;
 } GLGeometryBuffer;
 
 extern GLGeometryBuffer g_glGeometryBuffer;

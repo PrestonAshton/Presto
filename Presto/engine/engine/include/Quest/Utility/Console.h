@@ -40,15 +40,14 @@ maybeinline void MessageToConsole(ConsoleColour prefixColour, const vchar* prefi
 	struct tm* time = localtime((&secondsCeiling));
 	Vstrftime(buffer, 64, V("%H:%M:%S"), time);
 
-	WriteToConsole(BrightWhite, buffer);
-	WriteToConsole(BrightWhite, V(" ["));
-	WriteToConsole(prefixColour, prefixName);
-	WriteToConsole(BrightWhite, V("] "));
+	WriteToConsole(BrightWhite, buffer, NULL);
+	WriteToConsole(BrightWhite, V(" ["), NULL);
+	WriteToConsole(prefixColour, prefixName, NULL);
+	WriteToConsole(BrightWhite, V("] "), NULL);
 	va_list args;
 	va_start(args, fmt);
 	WriteLineToConsole(fmtColour, fmt, args);
 	va_end(args);
-	WriteLineToConsole(fmtColour, V("\n"));
 }
 
 #define FAIL(fmt, ...) \

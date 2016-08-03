@@ -102,7 +102,7 @@ void LoadScene(void)
 	g_renderer.texture.CreateFromFile("textures/diffuse/cat.bmp");
 	g_renderer.texture.CreateFromFile("textures/normal/default.bmp");
 
-	g_renderer.material.CreateFromData(hash("cat"), hash("textures/diffuse/cat.bmp"), hash("textures/normal/default.bmp"), (Colour32) {255, 255, 255, 255}, 80.0f);
+	g_renderer.material.CreateFromData(hash("cat"), hash("textures/diffuse/cat.bmp"), hash("textures/normal/default.bmp"), (Colour32) { 255, 255, 255, 255 }, 80.0f);
 
 	Transform transform = TransformIdentity;
 	transform.position = (Vector3) { 0, 0, 0 };
@@ -123,6 +123,8 @@ void BeginRender(void)
 	LoadDefaultData();
 	LoadScene();
 
+	g_renderer.PostResourceInit();
+
 	TickCounter tc = TickCounterCreate();
 	Time prevTime = TimeNow();
 
@@ -136,12 +138,12 @@ void BeginRender(void)
 		if (KeyPressed(Left, Single) || KeyPressed(Right, Single))
 			g_soundHandler.Play(hash("sound/ui/select.wav"));
 
-		if (KeyPressed(EscapeKey, Single))
-			engineGlobals.isRunning = false;
+		//if (KeyPressed(EscapeKey, Single))
+		//	engineGlobals.isRunning = false;
 
 		if (TickCounterUpdate(&tc, TimeFromMilliseconds(500)))
 		{
-			printf("Your FPS is: %f\n", tc.tickRate);
+			MSG(V("Your FPS is: %f"), tc.tickRate);
 		}
 
 		g_renderer.Render();
@@ -157,15 +159,13 @@ void EngineUpdate(void)
 Renderer renderStub = { 0 };
 Renderer nullRenderer = { 0 };
 
+INITIALIZER(InitialiseRenderFactory);
 void InitialiseRenderFactory(void)
 {
 	static b8 initialised = false;
 	if (initialised)
 		return;
 	initialised = true;
-
-	// Initialise all in NullRenderer to BlankFunction without doing stuff manually.
-	// Lazy method!
 
 	usize* nullRendererPtr = &nullRenderer;
 	for (u32 i = 0; i < (sizeof(Renderer) / sizeof(usize)); i++)
@@ -183,6 +183,7 @@ void InitialiseRenderFactory(void)
 
 SoundHandler nullAudioHandler = { 0 };
 
+INITIALIZER(InitialiseSoundHandlerFactory);
 void InitialiseSoundHandlerFactory(void)
 {
 	static b8 initialised = false;
@@ -230,7 +231,7 @@ void StartEngine(const vchar* dir, const vchar* args)
 
 	BeginRender();
 
-	CloseEngineLock();	
+	CloseEngineLock();
 	return 1;
 }
 

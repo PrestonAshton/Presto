@@ -1,18 +1,18 @@
 GLGeometryBuffer g_glGeometryBuffer = { 0 };
 
-forceinline GLAddRenderTarget(u16 width, u16 height, u32* object, u32 attachment, i32 internalFormat, u32 format, u32 type)
+forceinline GLAddRenderTarget(u16 width, u16 height, GLuint* object, GLenum attachment, i32 internalFormat, u32 format, u32 type)
 {
 	if (!*object)
-		glGenTextures(1, object);
+		GL_FUNCTION(glGenTextures(1, object));
 
-	glBindTexture(GL_TEXTURE_2D, *object);
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	GL_FUNCTION(glBindTexture(GL_TEXTURE_2D, *object));
+	GL_FUNCTION(glTexImage2D(GL_TEXTURE_2D, 0, (GLint)internalFormat, (GLsizei)width, (GLsizei)height, 0, (GLenum)format, (GLenum)type, NULL));
+	GL_FUNCTION(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	GL_FUNCTION(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GL_FUNCTION(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GL_FUNCTION(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
-	glFramebufferTexture(GL_FRAMEBUFFER, attachment, *object, 0);
+	GL_FUNCTION(glFramebufferTexture(GL_FRAMEBUFFER, attachment, *object, 0));
 }
 
 void GLGeometryBufferCreate(u16 width, u16 height)
@@ -24,33 +24,37 @@ void GLGeometryBufferCreate(u16 width, u16 height)
 	g_glGeometryBuffer.height = height;
 
 	if (!g_glGeometryBuffer.fbo)
-		glGenFramebuffers(1, &(g_glGeometryBuffer.fbo));
+	{
+		GL_FUNCTION(glGenFramebuffers(1, &(g_glGeometryBuffer.fbo)));
+	}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, g_glGeometryBuffer.fbo);
+	GL_FUNCTION(glBindFramebuffer(GL_FRAMEBUFFER, g_glGeometryBuffer.fbo));
 
-	u32 depthRenderBuffer;
+	GLuint depthRenderBuffer;
 
-	glGenRenderbuffers(1, &depthRenderBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, g_glGeometryBuffer.width, g_glGeometryBuffer.height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+	GL_FUNCTION(glGenRenderbuffers(1, &depthRenderBuffer));
+	GL_FUNCTION(glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer));
+	GL_FUNCTION(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, (GLsizei)g_glGeometryBuffer.width, (GLsizei)g_glGeometryBuffer.height));
+	GL_FUNCTION(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer));
 
-	u32 drawBuffers[3];
-
-	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.diffuse), GL_COLOR_ATTACHMENT0, GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
+	GLuint drawBuffers[3];
 	drawBuffers[0] = GL_COLOR_ATTACHMENT0;
-	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.specular), GL_COLOR_ATTACHMENT1, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
 	drawBuffers[1] = GL_COLOR_ATTACHMENT1;
-	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.normal), GL_COLOR_ATTACHMENT2, GL_RGB10_A2, GL_RGBA, GL_FLOAT);
 	drawBuffers[2] = GL_COLOR_ATTACHMENT2;
-	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.depth), GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT);
 
-	glDrawBuffers(3, &drawBuffers[0]);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.diffuse.object), GL_COLOR_ATTACHMENT0, GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.specular.object), GL_COLOR_ATTACHMENT1, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.normal.object), GL_COLOR_ATTACHMENT2, GL_RGB10_A2, GL_RGBA, GL_FLOAT);
+	GLAddRenderTarget(width, height, &(g_glGeometryBuffer.depth.object), GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_FLOAT);
 
+	GL_FUNCTION(glDrawBuffers(3, &drawBuffers[0]));
+	GL_FUNCTION(glBindTexture(GL_TEXTURE_2D, 0));
+	GL_FUNCTION(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+
+#ifdef _DEBUG
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
 		FAIL("Framebuffer incomplete!");
 	}
+#endif
 }

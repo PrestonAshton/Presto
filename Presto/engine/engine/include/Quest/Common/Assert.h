@@ -18,9 +18,9 @@ forceinline void ForceAssert(const vchar* assertionText, const vchar* customMess
 	AssertActual(x, NULL, __FILE__, __LINE__)
 
 #define AssertActual(x, y, file, line) \
-	static b8 ASSERTBLOCK##line = false; \
+	static b8 TOKENPASTE(ASSERTBLOCK, line) = false; \
 	if (!( x )) \
-		ForceAssert( V(#x) , y , file, line, & ASSERTBLOCK##line );
+		ForceAssert( V(#x) , y , file, line, & TOKENPASTE(ASSERTBLOCK, line) );
 #else
 
 #define AssertMsg(x, y)

@@ -80,6 +80,8 @@ typedef u16 vchar;
 #define Vtolower towlower
 #define Vfopen _wfopen
 #define Vvsprintf vswprintf
+#define Vsnprintf _snwprintf
+#define Vvsnprintf _vsnwprintf
 #define Vstrftime wcsftime
 #define Vstrcopy wcsncpy
 #define Vfgets fgetws
@@ -99,6 +101,8 @@ typedef u8 vchar;
 #define Vstrdup strdup_s
 #define Vstrstr strstr
 //#define Vstrsep strsep
+#define Vsnprintf snprintf
+#define Vvsnprintf vsnprintf
 #define Vtolower tolower
 #define Vfopen fopen
 #define Vvsprintf vsprintf

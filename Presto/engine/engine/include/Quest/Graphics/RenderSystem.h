@@ -127,16 +127,18 @@ forceinline b8 type##IsValid(Instance instance)\
 	return instance != EmptyComponent;\
 }\
 \
-forceinline void type##Clean()\
+forceinline void type##Clean(void)\
 {\
 }\
 \
-void type##Init();\
-void type##Render()
+void type##Init(void);\
+void type##Render(void);\
+void type##PostResourceInit(void);
 
 DEFINE_RENDER_SYSTEM(NullRenderSystem, u32, g_nullRenderSystem);
 
 BLANK_FUNCTION(void NullRenderSystemInit)
 BLANK_FUNCTION(void NullRenderSystemRender)
+BLANK_FUNCTION(void NullRenderSystemPostResourceInit)
 
 #endif

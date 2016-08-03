@@ -35,38 +35,21 @@ void OpenConsole(void)
 	SetConsoleOutputCP(65001);
 }
 
-void WriteToConsole(ConsoleColour colour, const vchar* fmt, ...)
+void WriteToConsole(ConsoleColour colour, const vchar* fmt, va_list args)
 {
-	usize textLength = Vstrlen(fmt);
-	vchar* textBuffer[1024];
-
-	va_list args;
-	va_start(args, fmt);
-	Vvsprintf(textBuffer, 1024, fmt, args);
-	va_end(args);
-
+	u32 size = Vvsnprintf(NULL, 0, fmt, args) + 1;
+	vchar* buffer = spawn(size * sizeof(vchar));
+	Vvsprintf(buffer, size, fmt, args);
 	SetConsoleTextAttribute(handle_out, colour);
-
-	WriteConsole(handle_out, textBuffer, textLength, NULL, NULL);
+	WriteConsole(handle_out, buffer, size - 1, NULL, NULL);
 }
 
-void UpdateConsole(void)
+void WriteLineToConsole(ConsoleColour colour, const vchar* fmt, va_list args)
 {
-	if (KeyPressed(GraveAccent, Single))
-		OpenConsole();
-}
-
-void WriteLineToConsole(ConsoleColour colour, const vchar* fmt, ...)
-{
-	usize textLength = Vstrlen(fmt);
-	usize textSize = (textLength + 2) * sizeof(vchar);
-	vchar* textBuffer = malloc(textSize);
-	copyMemory(fmt, textBuffer, textSize);
-	textBuffer[textLength] = V('\n');
-	textBuffer[textLength + 1] = V('\0');
-
-	va_list args;
-	va_start(args, fmt);
-	WriteToConsole(colour, fmt, args);
-	va_end(args);
+	u32 fmtSize = Vstrlen(fmt);
+	vchar* buffer = conjure((fmtSize + 2) * sizeof(vchar));
+	copyMemory(fmt, buffer, (fmtSize) * sizeof(vchar));
+	buffer[fmtSize] = V('\n');
+	buffer[fmtSize + 1] = V('\0');
+	WriteToConsole(colour, buffer, args);
 }

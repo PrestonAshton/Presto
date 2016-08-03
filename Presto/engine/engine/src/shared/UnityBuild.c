@@ -1,5 +1,6 @@
 #include "shared/camera.c"
 #include "shared/common.c"
+#include "shared/console.c"
 #include "shared/engine.c"
 #include "shared/memory.c"
 #include "shared/mesh.c"

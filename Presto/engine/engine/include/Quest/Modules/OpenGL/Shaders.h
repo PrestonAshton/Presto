@@ -2,6 +2,7 @@
 #define QUEST_GRAPHICS_OPENGL_SHADERS_H
 
 #include <Quest/Utility/Filesystem.h>
+#include <Quest/Graphics/MeshData.h>
 
 enum UsedShaders
 {
@@ -15,10 +16,9 @@ enum UsedShaders
 	GLTotalShaders
 };
 
-void GLCreateShader(const a8* vertexPath, const a8* fragmentPath, u8 shaderId);
-void GLRegisterUniform(u8 uniformPosition, u8 shaderId, const a8* name);
+void GLCreateShader(const a8* vertexPath, const a8* fragmentPath, GLuint shaderId);
 
-u32 g_glShaderObjects[GLTotalShaders] = { 0 };
+GLuint g_glShaderObjects[GLTotalShaders] = { 0 };
 
 // u_camera
 // u_cameraPosition
@@ -52,45 +52,62 @@ u32 g_glShaderObjects[GLTotalShaders] = { 0 };
 // u_light.direction
 // u_light.coneAngle
 
-enum GLUniformPositions
+typedef struct
 {
-	u_camera = 1,
-	u_cameraPosition = 2,
+	GLuint u_camera;
+	GLuint u_cameraPosition;
 
-	u_material_diffuseMap,
-	u_material_normalMap,
-	u_material_diffuseColour,
-	u_material_specularColour,
-	u_material_specularExponent,
+	struct
+	{
+		GLuint diffuseMap;
+		GLuint normalMap;
+		GLuint diffuseColour;
+		GLuint specularColour;
+		GLuint specularExponent;
+	} u_material;
 
-	u_transform_position,
-	u_transform_orientation,
-	u_transform_scale,
+	struct
+	{
+		GLuint position;
+		GLuint orientation;
+		GLuint scale;
+	} u_transform;
 
-	u_diffuse,
-	u_lighting,
-	u_gamma,
-	u_tex,
-	u_specular,
-	u_normal,
-	u_depth,
-	u_cameraInverse,
+	GLuint u_diffuse;
+	GLuint u_lighting;
+	GLuint u_gamma;
+	GLuint u_tex;
+	GLuint u_specular;
+	GLuint u_normal;
+	GLuint u_depth;
+	GLuint u_cameraInverse;
 
-	u_light_intensities,
-	u_light_position,
-	u_light_base_intensities,
-	u_light_attenuation_constant,
-	u_light_attenuation_linear,
-	u_light_attenuation_quadratic,
-	u_light_range,
-	u_light_direction,
-	u_light_coneAngle,
-	TotalUniforms
-};
+	struct
+	{
+		GLuint intensities;
+		GLuint position;
+		struct
+		{
+			GLuint intensities;
+		} base;
+		struct
+		{
+			GLuint constant;
+			GLuint linear;
+			GLuint quadratic;
+		} attenuation;
+
+		GLuint range;
+		GLuint direction;
+		GLuint coneAngle;
+	} u_light;
+} GLUniformSet;
 
 
-u32 g_glUniformPositions[GLTotalShaders * TotalUniforms] = { 0 };
+GLUniformSet g_glUniformPositions[GLTotalShaders] = { 0 };
 
-#define GET_UNIFORM(shader, uniformname) g_glUniformPositions[ ((shader + 1) * TotalUniforms) - uniformname - 1]
+#define GET_UNIFORM(shader, uniform) g_glUniformPositions[ shader ].##uniform
+
+#define REGISTER_UNIFORM(shader, uniform) GET_UNIFORM(shader, uniform) = glGetUniformLocation(g_glShaderObjects[shader], #uniform )
 
 #endif

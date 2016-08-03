@@ -128,11 +128,12 @@ void OpenGLGameWindow() {
 	}
 }
 
-i8 UpdateGLGameWindow(void) {
+void UpdateGLGameWindow(void) {
 	MSG message;
 	if (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&message);
 		DispatchMessage(&message);
+		SwapBuffers(deviceContext);
 	}
 }

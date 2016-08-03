@@ -1,42 +1,43 @@
-void GeometryPass(void);
-void LightPass(void);
-void OutPass(void);
+void GLRenderSystemGeometryPass(void);
+void GLRenderSystemLightPass(void);
+void GLRenderSystemOutPass(void);
 
 GLRenderSystem g_glRenderSystem = { 0 };
 GLTexture currentTextures[32];
+GLMesh g_glCachedQuad = { 0 };
 
 void GLRenderSystemSetTexture(GLTexture texture, u32 position)
 {
-	if (texture.object != currentTextures[position].object)
-	{
-		currentTextures[position] = texture;
-		GLTextureBindTexture(texture, position);
-	}
+	//if (texture.object != currentTextures[position].object)
+	//{
+	//	currentTextures[position] = texture;
+	GLTextureBindTexture(texture, position);
+	//}
 }
 
 void GLRenderSystemGeometryPass(void)
 {
 	GLGeometryBufferCreate(1280, 720);
 
-	glEnable(GL_TEXTURE_2D);
+	GL_FUNCTION(glEnable(GL_TEXTURE_2D));
 
 	GLGeometryBufferBind(&g_glGeometryBuffer);
 	{
-		glViewport(0, 0, g_glGeometryBuffer.width, g_glGeometryBuffer.height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GL_FUNCTION(glViewport(0, 0, g_glGeometryBuffer.width, g_glGeometryBuffer.height));
+		GL_FUNCTION(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-		glUseProgram(g_glShaderObjects[GLGeometryPass]);
+		GL_FUNCTION(glUseProgram(g_glShaderObjects[GLGeometryPass]));
 		Matrix4 cameraMatrix = CameraMatrix(&g_glRenderSystem.camera);
-		glUniformMatrix4fv(GET_UNIFORM(GLGeometryPass, u_camera), 1, GL_FALSE, &(cameraMatrix.data[0].data[0]));
-		glUniform3fv(GET_UNIFORM(GLGeometryPass, u_cameraPosition), 1, &(g_glRenderSystem.camera.transform.position.data[0]));
+		GL_FUNCTION(glUniformMatrix4fv(GET_UNIFORM(GLGeometryPass, u_camera), 1, GL_FALSE, &(cameraMatrix.data[0].data[0])));
+		GL_FUNCTION(glUniform3fv(GET_UNIFORM(GLGeometryPass, u_cameraPosition), 1, &(g_glRenderSystem.camera.transform.position.data[0])));
 
 		for (u32 i = 0; i < g_glRenderSystem.data.length; i++)
 		{
 			EntityId entityId = g_glRenderSystem.data.entityId[i];
 			GLRenderComponent* component = &(g_glRenderSystem.data.component[i]);
 
-			glUniform1ui(GET_UNIFORM(GLGeometryPass, u_material_diffuseMap), 0);
-			glUniform1ui(GET_UNIFORM(GLGeometryPass, u_material_normalMap), 1);
+			GL_FUNCTION(glUniform1i(GET_UNIFORM(GLGeometryPass, u_material.diffuseMap), 0));
+			GL_FUNCTION(glUniform1i(GET_UNIFORM(GLGeometryPass, u_material.normalMap), 1));
 
 			f32 r, g, b, a;
 			r = (f32)component->material.diffuseColour.r / 255.0f;
@@ -44,21 +45,22 @@ void GLRenderSystemGeometryPass(void)
 			b = (f32)component->material.diffuseColour.b / 255.0f;
 			a = (f32)component->material.diffuseColour.a / 255.0f;
 
-			glUniform4f(GET_UNIFORM(GLGeometryPass, u_material_diffuseColour), r, g, b, a);
-			glUniform4f(GET_UNIFORM(GLGeometryPass, u_material_specularColour), r, g, b, a);
-			glUniform1f(GET_UNIFORM(GLGeometryPass, u_material_specularExponent), component->material.specularExponent);
+
+			GL_FUNCTION(glUniform4f(GET_UNIFORM(GLGeometryPass, u_material.diffuseColour), r, g, b, a));
+			GL_FUNCTION(glUniform4f(GET_UNIFORM(GLGeometryPass, u_material.specularColour), r, g, b, a));
+			GL_FUNCTION(glUniform1f(GET_UNIFORM(GLGeometryPass, u_material.specularExponent), component->material.specularExponent));
 
 			Transform transform = SceneGraphGetWorldTransform(SceneGraphGetNodeId(entityId));
-			glUniform4fv(GET_UNIFORM(GLGeometryPass, u_transform_orientation), 1, &(transform.orientation.data[0]));
-			glUniform3fv(GET_UNIFORM(GLGeometryPass, u_transform_position), 1, &(transform.position.data[0]));
-			glUniform3fv(GET_UNIFORM(GLGeometryPass, u_transform_scale), 1, &(transform.scale.data[0]));
+			GL_FUNCTION(glUniform4fv(GET_UNIFORM(GLGeometryPass, u_transform.orientation), 1, &(transform.orientation.data[0])));
+			GL_FUNCTION(glUniform3fv(GET_UNIFORM(GLGeometryPass, u_transform.position), 1, &(transform.position.data[0])));
+			GL_FUNCTION(glUniform3fv(GET_UNIFORM(GLGeometryPass, u_transform.scale), 1, &(transform.scale.data[0])));
 
 			GLRenderSystemSetTexture(component->material.diffuseMap, 0);
 			GLRenderSystemSetTexture(component->material.normalMap, 1);
 
 			GLMeshDraw(component->mesh);
 		}
-		glFlush();
+		GL_FUNCTION(glFlush());
 	}
 	GLGeometryBufferUnbind();
 }
@@ -75,18 +77,18 @@ void GLRenderSystemOutPass(void)
 
 void GLRenderSystemOutput(void)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(g_glShaderObjects[GLTargetPassThru]);
-	glUniform1i(GET_UNIFORM(GLTargetPassThru, u_tex), 0);
-	GLRenderSystemSetTexture(g_glGeometryBuffer.depth, 0);
+	GL_FUNCTION(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	GL_FUNCTION(glUseProgram(g_glShaderObjects[GLTargetPassThru]));
+	GL_FUNCTION(glUniform1i(GET_UNIFORM(GLTargetPassThru, u_tex), 0));
+	GLRenderSystemSetTexture(g_glGeometryBuffer.diffuse, 0);
 	//GLTexture testCat = Hashmap_GLTextureGetValue(&g_glTextures, hash("textures/diffuse/cat.bmp"));
 	//GLRenderSystemSetTexture(testCat, 0);
 
 	// OPTIMISE ME AND GET QUAD PROPERLY!
 
-	GLMeshDraw(Hashmap_GLMeshGetValue(&g_glMeshes, hash("quad")));
+	GLMeshDraw(g_glCachedQuad);
 
-	glFlush();
+	//glFlush();
 }
 
 void GLRenderSystemInit(void)
@@ -116,20 +118,23 @@ void GLRenderSystemInit(void)
 	GLCreateShader("shaders/deferredLightPass.vs", "shaders/deferredOutput.fs", GLOutput);
 	GLCreateShader("shaders/deferredLightPass.vs", "shaders/target.fs", GLTargetPassThru);
 
-	// Register Geometry Pass Uniforms
-	GLRegisterUniform(u_camera, GLGeometryPass, "u_camera");
-	GLRegisterUniform(u_cameraPosition, GLGeometryPass, "u_cameraPosition");
-	GLRegisterUniform(u_material_diffuseMap, GLGeometryPass, "u_material.diffuseMap");
-	GLRegisterUniform(u_material_normalMap, GLGeometryPass, "u_material.normalMap");
-	GLRegisterUniform(u_material_diffuseColour, GLGeometryPass, "u_material.diffuseColour");
-	GLRegisterUniform(u_material_specularColour, GLGeometryPass, "u_material.specularColour");
-	GLRegisterUniform(u_material_specularExponent, GLGeometryPass, "u_material.specularExponent");
-	GLRegisterUniform(u_transform_orientation, GLGeometryPass, "u_transform.orientation");
-	GLRegisterUniform(u_transform_position, GLGeometryPass, "u_transform.position");
-	GLRegisterUniform(u_transform_scale, GLGeometryPass, "u_transform.scale");
+	// Register GeometryPass uniforms
+	REGISTER_UNIFORM(GLGeometryPass, u_camera);
+	REGISTER_UNIFORM(GLGeometryPass, u_cameraPosition);
+
+	REGISTER_UNIFORM(GLGeometryPass, u_material.diffuseMap);
+	REGISTER_UNIFORM(GLGeometryPass, u_material.normalMap);
+	REGISTER_UNIFORM(GLGeometryPass, u_material.diffuseColour);
+	REGISTER_UNIFORM(GLGeometryPass, u_material.specularColour);
+	REGISTER_UNIFORM(GLGeometryPass, u_material.specularExponent);
+
+	REGISTER_UNIFORM(GLGeometryPass, u_transform.orientation);
+	REGISTER_UNIFORM(GLGeometryPass, u_transform.position);
+	REGISTER_UNIFORM(GLGeometryPass, u_transform.scale);
+
 
 	// Register Target Pass Thru Uniforms
-	GLRegisterUniform(u_tex, GLTargetPassThru, "u_tex");
+	REGISTER_UNIFORM(GLTargetPassThru, u_tex);
 
 	g_glRenderSystem.camera.farClippingPlane = 1000.0f;
 	g_glRenderSystem.camera.nearClippingPlane = 0.01f;
@@ -142,13 +147,16 @@ void GLRenderSystemInit(void)
 	CameraLookAtEquals(&g_glRenderSystem.camera, &position, &g_straightUp);
 }
 
-// clear colour test
+void GLRenderSystemPostResourceInit(void)
+{
+	g_glCachedQuad = Hashmap_GLMeshGetValue(&g_glMeshes, hash("quad"));
+}
 
 void GLRenderSystemRender(void)
 {
 	GLRenderSystemGeometryPass();
-	GLRenderSystemLightPass();
-	GLRenderSystemOutPass();
+	//GLRenderSystemLightPass();
+	//GLRenderSystemOutPass();
 
 	GLRenderSystemOutput();
 

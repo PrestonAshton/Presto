@@ -39,24 +39,24 @@ a8* GLLoadShaderFile(const a8* path)
 	return StrCStr(&output);
 }
 
-b8 GLAttachShaderFromMemory(a8* source, u16 type, u8 object)
+b8 GLAttachShaderFromMemory(a8* source, GLuint type, GLuint object)
 {
-	u8 shader = 0;
+	GLuint shader = 0;
 	shader = glCreateShader(type);
 
-	glShaderSource(shader, 1, &source, NULL);
-	glCompileShader(shader);
+	GL_FUNCTION(glShaderSource(shader, 1, &source, NULL));
+	GL_FUNCTION(glCompileShader(shader));
 
-	i32 status = 0;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+	GLint status = 0;
+	GL_FUNCTION(glGetShaderiv(shader, GL_COMPILE_STATUS, &status));
 
 	if (status == GL_FALSE)
 	{
-		i32 infoLogLength;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+		GLint infoLogLength;
+		GL_FUNCTION(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength));
 
 		a8* infoLog = conjure(infoLogLength + 1);
-		glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog);
+		GL_FUNCTION(glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog));
 		infoLog[infoLogLength] = '\0';
 
 		vchar* buffer = conjure((infoLogLength + 1) * sizeof(vchar));
@@ -64,28 +64,28 @@ b8 GLAttachShaderFromMemory(a8* source, u16 type, u8 object)
 		Vforcevcharfromchar(buffer, infoLog);
 		FAIL(V("Shader failed to compile! OpenGL log: \n%s"), buffer);
 
-		glDeleteShader(shader);
+		GL_FUNCTION(glDeleteShader(shader));
 		return false;
 	}
 
-	glAttachShader(object, shader);
+	GL_FUNCTION(glAttachShader(object, shader));
 	return true;
 }
 
-void GLLinkShader(u8 object)
+void GLLinkShader(GLuint object)
 {
-	glLinkProgram(object);
+	GL_FUNCTION(glLinkProgram(object));
 
-	i32 status = 0;
-	glGetProgramiv(object, GL_LINK_STATUS, &status);
+	GLint status = 0;
+	GL_FUNCTION(glGetProgramiv(object, GL_LINK_STATUS, &status));
 
 	if (status == GL_FALSE)
 	{
-		i32 infoLogLength;
-		glGetProgramiv(object, GL_INFO_LOG_LENGTH, &infoLogLength);
+		GLint infoLogLength;
+		GL_FUNCTION(glGetProgramiv(object, GL_INFO_LOG_LENGTH, &infoLogLength));
 
 		a8* infoLog = conjure(infoLogLength + 1);
-		glGetProgramInfoLog(object, infoLogLength, NULL, infoLog);
+		GL_FUNCTION(glGetProgramInfoLog(object, infoLogLength, NULL, infoLog));
 		infoLog[infoLogLength] = '\0';
 
 		vchar* buffer = conjure((infoLogLength + 1) * sizeof(vchar));
@@ -93,7 +93,7 @@ void GLLinkShader(u8 object)
 		Vforcevcharfromchar(buffer, infoLog);
 		FAIL(V("Shader failed to link! OpenGL log: \n%s"), buffer);
 
-		glDeleteProgram(object);
+		GL_FUNCTION(glDeleteProgram(object));
 		return false;
 	}
 
@@ -101,7 +101,7 @@ void GLLinkShader(u8 object)
 }
 
 // returns the shader object
-void GLCreateShader(const a8* vertexPath, const a8* fragmentPath, u8 shaderId)
+void GLCreateShader(const a8* vertexPath, const a8* fragmentPath, u32 shaderId)
 {
 	g_glShaderObjects[shaderId] = glCreateProgram();
 
@@ -111,13 +111,14 @@ void GLCreateShader(const a8* vertexPath, const a8* fragmentPath, u8 shaderId)
 	GLAttachShaderFromMemory(vertexShader, GL_VERTEX_SHADER, g_glShaderObjects[shaderId]);
 	GLAttachShaderFromMemory(fragmentShader, GL_FRAGMENT_SHADER, g_glShaderObjects[shaderId]);
 
+	glBindAttribLocation((GLuint)g_glShaderObjects[shaderId], (GLuint)Position, (GLchar*)"a_position");
+	glBindAttribLocation((GLuint)g_glShaderObjects[shaderId], (GLuint)TexCoord, (GLchar*)"a_texCoord");
+	glBindAttribLocation((GLuint)g_glShaderObjects[shaderId], (GLuint)Colour, (GLchar*)"a_colour");
+	glBindAttribLocation((GLuint)g_glShaderObjects[shaderId], (GLuint)Normal, (GLchar*)"a_normal");
+	glBindAttribLocation((GLuint)g_glShaderObjects[shaderId], (GLuint)Tangent, (GLchar*)"a_tangent");
+
 	GLLinkShader(g_glShaderObjects[shaderId]);
 
 	murder(vertexShader);
 	murder(fragmentShader);
-}
-
-forceinline void GLRegisterUniform(u8 uniformPosition, u8 shaderId, const a8* name)
-{
-	GET_UNIFORM(shaderId, uniformPosition) = glGetUniformLocation(g_glShaderObjects[shaderId], name);
 }

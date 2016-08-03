@@ -7,28 +7,10 @@ vchar* GetEngineLockPath(void)
 	return buffer;
 }
 
-void alphabet(char *s, u64 len) {
-	static const char alphanum[] =
-		"abcdefghijklmnopqrstuvwxyz";
-
-	for (u64 i = 0; i < len / 26; i++) {
-		for (i8 j = 0; j < 27; j++)
-			s[i + j] = alphanum[j];
-	}
-
-	s[len] = '\0';
-}
-
 void OpenEngineLock(void)
 {
 	vchar* path = GetEngineLockPath();
-	HANDLE file = CreateFile(path, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	char* dummyText = HeapAlloc(GetProcessHeap(), NULL, GIGABYTES(1));
-	alphabet(dummyText, GIGABYTES(1));
-
-	WriteFile(file, dummyText, GIGABYTES(1), NULL, 0);
-	//free(dummyText);
-	HeapFree(GetProcessHeap(), NULL, dummyText);
+	CreateFile(path, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 }
 
 void CloseEngineLock(void)

@@ -38,6 +38,7 @@ typedef struct
 		void(*Create)(EntityId id, u64 meshName, u64 materialName);
 	} renderSystem;
 	void(*Init)();
+	void(*PostResourceInit)();
 	void(*Render)();
 } Renderer;
 

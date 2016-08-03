@@ -21,6 +21,7 @@ void InitGLRenderSystem(void)
 	glRenderer.renderSystem.Create = &GLRenderSystemInterfaceCreate;
 	glRenderer.Init = &GLRenderSystemInit;
 	glRenderer.Render = &GLRenderSystemRender;
+	glRenderer.PostResourceInit = &GLRenderSystemPostResourceInit;
 
 	Hashmap_RendererSetByPtr(&g_renderers, hash("opengl"), &glRenderer);
 }

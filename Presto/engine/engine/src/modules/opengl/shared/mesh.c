@@ -4,16 +4,16 @@ GLMesh GLMeshGenerateMesh(MeshData* data)
 {
 	GLMesh mesh = { 0 };
 
-	glGenBuffers(1, &(mesh.vbo));
-	glGenBuffers(1, &(mesh.ibo));
+	GL_FUNCTION(glGenBuffers(1, &(mesh.vbo)));
+	GL_FUNCTION(glGenBuffers(1, &(mesh.ibo)));
 
 	mesh.drawCount = data->indices.length;
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) *data->vertices.length, &(data->vertices.data[0]), GL_STATIC_DRAW);
+	GL_FUNCTION(glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo));
+	GL_FUNCTION(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * data->vertices.length, &(data->vertices.data[0]), GL_STATIC_DRAW));
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u32) *data->indices.length, &(data->indices.data[0]), GL_STATIC_DRAW);
+	GL_FUNCTION(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo));
+	GL_FUNCTION(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u32) * data->indices.length, &(data->indices.data[0]), GL_STATIC_DRAW));
 
 	return mesh;
 }

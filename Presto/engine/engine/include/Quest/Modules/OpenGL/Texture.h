@@ -3,6 +3,7 @@
 
 #include <Quest/Common.h>
 #include <Quest/Graphics/Colour.h>
+#include <Quest/Modules/OpenGL/Debug.h>
 #include <Quest/Modules/OpenGL/Mesh.h>
 
 /*enum TextureFilter
@@ -22,12 +23,12 @@ enum TextureWrapMode
 
 typedef struct
 {
-	u32 object;
+	GLuint object;
 } GLTexture;
 
 DEFINE_HASHMAP(GLTexture);
 
-Hashmap_GLTexture g_glTextures = { 0 };
+extern Hashmap_GLTexture g_glTextures;
 
 GLTexture GLTextureLoadFromFile(const a8* path);
 GLTexture GLTextureLoadFromImage(Image image);
@@ -40,12 +41,11 @@ forceinline void GLTextureBindTexture(GLTexture texture, u8 position)
 	if (position > 31)
 		position = 31;
 
-	// TODO: Do we need? glEnable(GL_TEXTURE_2D)
+	GL_FUNCTION(glActiveTexture(GL_TEXTURE0 + position));
 
-	glActiveTexture(GL_TEXTURE0 + position);
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture.object);
-	glDisable(GL_TEXTURE_2D);
+	GL_FUNCTION(glEnable(GL_TEXTURE_2D));
+	GL_FUNCTION(glBindTexture(GL_TEXTURE_2D, texture.object));
+	GL_FUNCTION(glDisable(GL_TEXTURE_2D));
 }
 
 #endif

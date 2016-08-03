@@ -107,6 +107,7 @@ typedef unsigned __int64 uint64_t;
 #include <inttypes.h>
 #endif
 #endif
+
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
 typedef unsigned int GLbitfield;

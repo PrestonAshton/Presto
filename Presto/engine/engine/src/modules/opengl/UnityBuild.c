@@ -6,6 +6,7 @@
 #include "shared/glshaders.c"
 #include "shared/texture.c"
 #include "shared/material.c"
+#include "shared/debug.c"
 #include "shared/mesh.c"
 #include "shared/geometrybuffer.c"
 

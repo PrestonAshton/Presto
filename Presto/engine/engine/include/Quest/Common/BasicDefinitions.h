@@ -51,6 +51,12 @@ ENABLE_WARNINGS
 #define false 0
 #define true 1
 
+#define TOKENPASTE(x, y) x ## y
+#define TOKENPASTE2(x, y) TOKENPASTE(x, y)
+
+
+#define PASS_THROUGH(x) x
+
 #define hash(x) murmur64( x , strlen(x) )
 #define hashCustomLength(x, length) murmur64( x , length )
 
